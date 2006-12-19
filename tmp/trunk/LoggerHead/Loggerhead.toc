@@ -3,8 +3,8 @@
 ## Notes: Automatically turns on the combat log for selected instances
 ## Author: Sano
 ## X-eMail: rsmozang@gmail.com
-## X-Build: $Revision: 20418 $
-## X-ReleaseDate: $Date: 2006-12-13 21:42:38 -0500 (Wed, 13 Dec 2006) $
+## X-Build: $Revision$
+## X-ReleaseDate: $Date$
 ## X-Category: Miscellaneous
 ## Version: 1
 
