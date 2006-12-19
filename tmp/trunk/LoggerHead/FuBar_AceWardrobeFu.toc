@@ -1,0 +1,30 @@
+## Interface: 11200
+
+## Title: FuBar - |cffffffffAceWardrobe|cff00ff00Fu|cff7fff7f -Ace2-|r
+## Notes: AceWardrobe FB plugin
+## Author: Sano
+## Version: 2.0
+## LastUpdate: $Date: 2006-09-27 18:55:31 -0400 (Wed, 27 Sep 2006) $
+## Version: $Revision: 12127 $
+## X-Website: http://www.wowinterface.com/downloads/fileinfo.php?id=4627
+## X-Email: rsmozang@gmail.com
+## X-WoWIPortal: sano
+## X-Category: Inventory
+
+## Dependencies: AceWardrobe
+## OptionalDeps: Ace2, FuBar, FuBarPlugin-2.0, DewDropLib, TabletLib
+
+## SavedVariables: AceWardrobeDB
+
+Libs\AceLibrary\AceLibrary.lua
+Libs\AceOO-2.0\AceOO-2.0.lua
+Libs\AceEvent-2.0\AceEvent-2.0.lua
+Libs\AceHook-2.0\AceHook-2.0.lua
+Libs\AceDB-2.0\AceDB-2.0.lua
+Libs\AceAddon-2.0\AceAddon-2.0.lua
+
+Libs\Dewdrop-2.0\Dewdrop-2.0.lua
+Libs\FuBarPlugin-2.0\FuBarPlugin-2.0.lua
+Libs\Tablet-2.0\Tablet-2.0.lua
+
+Core.lua

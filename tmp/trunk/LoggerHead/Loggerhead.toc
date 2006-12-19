@@ -1,0 +1,17 @@
+## Interface: 20000
+## Title: LoggerHead |cff7fff7f -Ace2-|r
+## Notes: Automatically turns on the combat log for selected instances
+## Author: Sano
+## X-eMail: rsmozang@gmail.com
+## X-Build: $Revision: 20418 $
+## X-ReleaseDate: $Date: 2006-12-13 21:42:38 -0500 (Wed, 13 Dec 2006) $
+## X-Category: Miscellaneous
+## Version: 1
+
+## OptionalDeps: Ace2, TouristLib
+## SavedVariables: LoggerHeadDB
+
+LoggerHeadLocale-enUS.lua
+LoggerHead.lua
+
+
