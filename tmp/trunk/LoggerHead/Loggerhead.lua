@@ -1,5 +1,6 @@
 local L = AceLibrary("AceLocale-2.2"):new("LoggerHead")
 local T = AceLibrary("Tourist-2.0")
+local Tablet = AceLibrary("Tablet-2.0")
 
 LoggerHead = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0","AceDB-2.0", "AceEvent-2.0", "FuBarPlugin-2.0")
 LoggerHead:RegisterDB("LoggerHeadDB")
@@ -70,55 +71,107 @@ LoggerHead.OnMenuRequest = {
                     args = {},
                 }
             },
-        }
+        },
+        zones = {
+            type = "group",
+            name = L["Zones"],
+            desc = L["Zone log settings"],
+            args = {
+                easternkingdoms = {
+                    type = "group",
+                    name = L["Eastern Kingdoms"],
+                    desc = L["Instance log settings"],
+                    args = {},
+                },
+                kalimdor = {
+                    type = "group",
+                    name = L["Kalimdor"],
+                    desc = L["Instance log settings"],
+                    args = {},
+                },
+                outland = {
+                    type = "group",
+                    name = L["Outland"],
+                    desc = L["Instance log settings"],
+                    args = {},
+                }
+            },
+        }        
     }
 }
 
 	-- Methods
 
 function LoggerHead:OnInitialize() 
-    for instance in T:IterateEasternKingdoms() do
+    for zone in T:IterateEasternKingdoms() do
         --LoggerHead:Print(instance)
-        if (T:IsInstance(instance)) then
-            local key = string.gsub(instance, " ", "")
+        if (T:IsInstance(zone)) then
+            local key = string.gsub(zone, " ", "")
             LoggerHead.OnMenuRequest.args.instances.args.easternkingdoms.args[key] = {
                 type = "toggle",
-                name = instance,
+                name = zone,
                 desc = L["Toggle Logging"],
                 get = function() return LoggerHead.db.profile.log[key] end,
                 set = function(v) LoggerHead.db.profile.log[key] = v end,
             }
+        else
+            local key = string.gsub(zone, " ", "")
+            LoggerHead.OnMenuRequest.args.zones.args.easternkingdoms.args[key] = {
+                type = "toggle",
+                name = zone,
+                desc = L["Toggle Logging"],
+                get = function() return LoggerHead.db.profile.log[key] end,
+                set = function(v) LoggerHead.db.profile.log[key] = v end,
+            }       
         end
     end
-    for instance in T:IterateKalimdor() do
+    for zone in T:IterateKalimdor() do
         --LoggerHead:Print(instance)
-        if (T:IsInstance(instance)) then
-            local key = string.gsub(instance, " ", "")
+        if (T:IsInstance(zone)) then
+            local key = string.gsub(zone, " ", "")
             LoggerHead.OnMenuRequest.args.instances.args.kalimdor.args[key] = {
                 type = "toggle",
-                name = instance,
+                name = zone,
                 desc = L["Toggle Logging"],
                 get = function() return LoggerHead.db.profile.log[key] end,
                 set = function(v) LoggerHead.db.profile.log[key] = v end,
             }
+        else
+            local key = string.gsub(zone, " ", "")
+            LoggerHead.OnMenuRequest.args.zones.args.kalimdor.args[key] = {
+                type = "toggle",
+                name = zone,
+                desc = L["Toggle Logging"],
+                get = function() return LoggerHead.db.profile.log[key] end,
+                set = function(v) LoggerHead.db.profile.log[key] = v end,
+            }       
         end
     end
-        for instance in T:IterateOutland() do
+    for zone in T:IterateOutland() do
         --LoggerHead:Print(instance)
-        if (T:IsInstance(instance)) then
-            local key = string.gsub(instance, " ", "")
+        if (T:IsInstance(zone)) then
+            local key = string.gsub(zone, " ", "")
             LoggerHead.OnMenuRequest.args.instances.args.outland.args[key] = {
                 type = "toggle",
-                name = instance,
+                name = zone,
                 desc = L["Toggle Logging"],
                 get = function() return LoggerHead.db.profile.log[key] end,
                 set = function(v) LoggerHead.db.profile.log[key] = v end,
             }
+        else
+            local key = string.gsub(zone, " ", "")
+            LoggerHead.OnMenuRequest.args.zones.args.outland.args[key] = {
+                type = "toggle",
+                name = zone,
+                desc = L["Toggle Logging"],
+                get = function() return LoggerHead.db.profile.log[key] end,
+                set = function(v) LoggerHead.db.profile.log[key] = v end,
+            }       
         end
     end
     
     StaticPopupDialogs["LoggerHeadLogConfirm"] = {
-		text = L["You have entered %s. Do you want to enable logging for this instance?"],
+		text = L["You have entered %s. Do you want to enable logging for this zone/instance?"],
 		button1 = L["Enable"],
 		button2 = L["Disable"],
 		sound = "levelup2",
@@ -140,19 +193,24 @@ end
 function LoggerHead:ZONE_CHANGED_NEW_AREA()
     local zone = GetRealZoneText()
     
-    self:DisableLogging()
+    if zone == nil or zone == "" then
+        -- zone hasn't been loaded yet, try again in 5 secs.
+        self:ScheduleEvent("ZONE_CHANGED_NEW_AREA",5)
+        self:Print("Unable to determine zone - retrying in 5 secs")
+        return
+    end
     
-    if not T:IsInstance(zone) then return end
+    local key = string.gsub(zone," ","")    
     
-    local key = string.gsub(zone," ","")
-    
-    self:Print(LoggerHead.db.profile.log[key])
+    --self:Print(LoggerHead.db.profile.log[key])
     if LoggerHead.db.profile.log[key] == nil then
-        StaticPopup_Show("LoggerHeadLogConfirm", "|cffd9d919"..zone.."|r")
+        LoggerHead.db.profile.log[key] = StaticPopup_Show("LoggerHeadLogConfirm", "|cffd9d919"..zone.."|r")
     end
     
     if LoggerHead.db.profile.log[key] == true then
         self:EnableLogging()
+    else
+        self:DisableLogging()
     end
 end
 
@@ -184,4 +242,21 @@ end
 
 function LoggerHead:OnClick()
     self:ToggleLogging()
+end
+
+function LoggerHead:OnTooltipUpdate()
+	local cat = Tablet:AddCategory(
+		'columns', 2,
+		'child_textR', 1,
+		'child_textG', 1,
+		'child_textB', 0,
+		'child_text2R', 1,
+		'child_text2G', 1,
+		'child_text2B', 1
+	)
+    
+    cat:AddLine(
+		'text',L["Combat Log"],
+        'text2',LoggingCombat() and L["Enabled"] or L["Disabled"]
+    )
 end
