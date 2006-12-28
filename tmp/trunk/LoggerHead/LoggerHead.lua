@@ -206,7 +206,7 @@ function LoggerHead:ZONE_CHANGED_NEW_AREA()
         return
     end
     
-    self:Print(zone);
+    -- self:Print(zone);
     
     local key = string.gsub(zone," ","")    
     if LoggerHead.db.profile.log[key] == nil then
