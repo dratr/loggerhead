@@ -12,6 +12,8 @@ LoggerHead.hasIcon = "Interface\\AddOns\\LoggerHead\\disabled"
 LoggerHead.hasNoText = true
 LoggerHead.defaultPosition = "RIGHT"
 
+--- Totally ganked this function from oTweaks/Haste
+
 local range = function(n, CVar, d, min, max, s)
 	return {
 		name = n,
@@ -32,22 +34,8 @@ end
 LoggerHead.OnMenuRequest = {
     type = "group",
     args = {
-        combatlog = {
-            type = "group",
-            name = L["Log Range"],
-            desc = L["Log range settings."],
-            args = {
-                creature = range(L["Creature"], "CombatLogRangeCreature", L["Creature combat log range. Default: 30"], 5, 200, 5),
-                friendlyplayers = range(L["Friendly players"], "CombatLogRangeFriendlyPlayers", L["Friendly players combat log range. Default: 50"], 5, 200, 5),
-                friendlyplayerspets = range(L["Friendly players' pet"], "CombatLogRangeFriendlyPlayersPets", L["Friendly players pet combat log range. Default: 50"], 5, 200, 5),
-                hostileplayers = range(L["Hostile players"], "CombatLogRangeHostilePlayers", L["Hostile players combat log range. Default: 50"], 5, 200, 5),
-                hostileplayerspets = range(L["Hostile players' pet"], "CombatLogRangeHostilePlayersPets", L["Hostile players pet combat log range. Default: 50"], 5, 200, 5),
-                party = range(L["Party members"], "CombatLogRangeParty", L["Party members combat log range. Default: 50"], 5, 200, 5),
-                partypets	= range(L["Party members' pet"], "CombatLogRangePartyPet", L["Party members' pet combat log range. Default: 50"], 5, 200, 5),
-                death = range(L["Death"], "CombatDeathLogRange", L["Range for death messages. Default: 60"], 5, 200, 5),
-            }
-        },
         instances = {
+            order = 100,
             type = "group",
             name = L["Instances"],
             desc = L["Instance log settings"],
@@ -73,6 +61,7 @@ LoggerHead.OnMenuRequest = {
             },
         },
         zones = {
+            order = 200,
             type = "group",
             name = L["Zones"],
             desc = L["Zone log settings"],
@@ -96,7 +85,24 @@ LoggerHead.OnMenuRequest = {
                     args = {},
                 }
             },
-        }        
+        },
+        spacer = { type = "header", order = 300 },
+        combatlog = {
+            order = 400,
+            type = "group",
+            name = L["Log Range"],
+            desc = L["Log range settings."],
+            args = {
+                creature = range(L["Creature"], "CombatLogRangeCreature", L["Creature combat log range. Default: 30"], 5, 200, 5),
+                friendlyplayers = range(L["Friendly players"], "CombatLogRangeFriendlyPlayers", L["Friendly players combat log range. Default: 50"], 5, 200, 5),
+                friendlyplayerspets = range(L["Friendly players' pet"], "CombatLogRangeFriendlyPlayersPets", L["Friendly players pet combat log range. Default: 50"], 5, 200, 5),
+                hostileplayers = range(L["Hostile players"], "CombatLogRangeHostilePlayers", L["Hostile players combat log range. Default: 50"], 5, 200, 5),
+                hostileplayerspets = range(L["Hostile players' pet"], "CombatLogRangeHostilePlayersPets", L["Hostile players pet combat log range. Default: 50"], 5, 200, 5),
+                party = range(L["Party members"], "CombatLogRangeParty", L["Party members combat log range. Default: 50"], 5, 200, 5),
+                partypets	= range(L["Party members' pet"], "CombatLogRangePartyPet", L["Party members' pet combat log range. Default: 50"], 5, 200, 5),
+                death = range(L["Death"], "CombatDeathLogRange", L["Range for death messages. Default: 60"], 5, 200, 5),
+            }
+        }
     }
 }
 
@@ -180,29 +186,29 @@ function LoggerHead:OnInitialize()
 		timeout = 0,
 		OnAccept = function() 
             LoggerHead.db.profile.log[string.gsub(GetRealZoneText()," ","")] = true
-            LoggerHead:ZONE_CHANGED_NEW_AREA()
+            self:ZoneChangedNewArea()
         end,
         OnCancel = function() 
             LoggerHead.db.profile.log[string.gsub(GetRealZoneText()," ","")] = false
-            LoggerHead:ZONE_CHANGED_NEW_AREA()
+            self:ZoneChangedNewArea()
         end
 	}
 end
 
 
 function LoggerHead:OnEnable()
-	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","ZoneChangedNewArea")
     
-    self:ZONE_CHANGED_NEW_AREA()
+    self:ZoneChangedNewArea()
 end
 
-function LoggerHead:ZONE_CHANGED_NEW_AREA()
+function LoggerHead:ZoneChangedNewArea()
     local zone = GetRealZoneText()
     
     if zone == nil or zone == "" then
         -- zone hasn't been loaded yet, try again in 5 secs.
-        self:ScheduleEvent("ZONE_CHANGED_NEW_AREA",5)
-        self:Print("Unable to determine zone - retrying in 5 secs")
+        self:ScheduleEvent(self.ZoneChangedNewArea,5,self)
+        --self:Print("Unable to determine zone - retrying in 5 secs")
         return
     end
     
@@ -223,6 +229,7 @@ end
 
 function LoggerHead:EnableLogging()
     if (not LoggingCombat()) then
+        RaidWarningFrame:AddMessage("Combat Log Enabled")
         self:Print("Combat Log Enabled")
     end
     LoggingCombat(1)
@@ -232,6 +239,7 @@ end
 
 function LoggerHead:DisableLogging()
     if (LoggingCombat()) then
+        RaidWarningFrame:AddMessage("Combat Log Disabled")
         self:Print("Combat Log Disabled")
     end
     LoggingCombat(0)
