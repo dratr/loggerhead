@@ -1,4 +1,4 @@
-## Interface: 20000
+## Interface: 20003
 ## Title: LoggerHead |cff7fff7f -Ace2-|r
 ## Notes: Automatically turns on the combat log for selected instances
 ## Author: Sano
@@ -13,5 +13,4 @@
 
 LoggerHeadLocale-enUS.lua
 Loggerhead.lua
-
 
