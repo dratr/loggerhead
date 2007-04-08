@@ -101,6 +101,8 @@ LoggerHead.OnMenuRequest = {
 				party = range(L["Party members"], "CombatLogRangeParty", L["Party members combat log range. Default: 50"], 5, 200, 5),
 				partypets = range(L["Party members' pet"], "CombatLogRangePartyPet", L["Party members' pet combat log range. Default: 50"], 5, 200, 5),
 				death = range(L["Death"], "CombatDeathLogRange", L["Range for death messages. Default: 60"], 5, 200, 5),
+				target = range("Target", "targetNearestDistance", "Max range for targeting. Default: 50", 30, 120, 5),
+				targetradius = range("Target Radius", "targetNearestDistanceRadius", "Max radius for targeting. Default: 10", 1, 25, 1),
 			}
 		}
 	}
