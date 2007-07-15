@@ -9,5 +9,8 @@
 ## Version: 1
 ## OptionalDeps: Ace2, TouristLib
 ## SavedVariables: LoggerHeadDB
+
+embeds.xml
+
 LoggerHeadLocale-enUS.lua
 Loggerhead.lua
