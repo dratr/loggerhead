@@ -69,19 +69,19 @@ LoggerHead.OnMenuRequest = {
 				easternkingdoms = {
 					type = "group",
 					name = L["Eastern Kingdoms"],
-					desc = L["Instance log settings"],
+					desc = L["Zone log settings"],
 					args = {},
 				},
 				kalimdor = {
 					type = "group",
 					name = L["Kalimdor"],
-					desc = L["Instance log settings"],
+					desc = L["Zone log settings"],
 					args = {},
 				},
 				outland = {
 					type = "group",
 					name = L["Outland"],
-					desc = L["Instance log settings"],
+					desc = L["Zone log settings"],
 					args = {},
 				}
 			},
@@ -210,7 +210,7 @@ function LoggerHead:ZoneChangedNewArea()
 	if zone == nil or zone == "" then
 		-- zone hasn't been loaded yet, try again in 5 secs.
 		self:ScheduleEvent(self.ZoneChangedNewArea,5,self)
-		self:Print("Unable to determine zone - retrying in 5 secs")
+		--self:Print("Unable to determine zone - retrying in 5 secs")
 		return
 	end
 

@@ -1,4 +1,4 @@
-## Interface: 20100
+## Interface: 20200
 ## Title: LoggerHead |cff7fff7f -Ace2-|r
 ## Notes: Automatically turns on the combat log for selected instances
 ## Author: Sano
@@ -9,8 +9,6 @@
 ## Version: 1
 ## OptionalDeps: Ace2, TouristLib
 ## SavedVariables: LoggerHeadDB
-
 embeds.xml
-
 LoggerHeadLocale-enUS.lua
 Loggerhead.lua

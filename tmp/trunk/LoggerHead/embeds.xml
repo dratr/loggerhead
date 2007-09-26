@@ -9,6 +9,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 <script file="libs\AceEvent-2.0\AceEvent-2.0.lua"/>
 <script file="libs\AceLocale-2.2\AceLocale-2.2.lua"/>
 
+<script file="libs\Babble-2.0\Babble-Zone-2.2\Babble-Zone-2.2.lua"/>
 <script file="libs\Tablet-2.0\Tablet-2.0.lua"/>
 <script file="libs\Tourist-2.0\Tourist-2.0.lua"/>
 <script file="libs\FuBarPlugin-2.0\FuBarPlugin-2.0.lua"/>
