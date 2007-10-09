@@ -11,4 +11,5 @@
 ## SavedVariables: LoggerHeadDB
 embeds.xml
 LoggerHeadLocale-enUS.lua
+LoggerHeadLocale-zhTW.lua
 Loggerhead.lua
