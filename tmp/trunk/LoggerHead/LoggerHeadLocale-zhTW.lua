@@ -19,7 +19,7 @@ L:RegisterTranslations("zhTW", function() return {
     ["Party members' pet combat log range. Default: 50"] = "小隊成員的寵物作戰日誌範圍。預設: 50",
     ["Death"] = "死亡",
     ["Range for death messages. Default: 60"] = "記錄死亡訊息的範圍。預設: 60",
-    ["Toggle Logging"] = "Toggle Logging",
+    ["Toggle Logging"] = "開關日誌",
     ["Instances"] = "副本",
     ["Instance log settings"] = "設定副本日誌",
     ["Zones"] = "地區",
