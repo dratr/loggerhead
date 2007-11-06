@@ -1,6 +1,7 @@
 local L = AceLibrary("AceLocale-2.2"):new("LoggerHead")
 
 L:RegisterTranslations("enUS", function() return {
+    ["LoggerHead"] = true,
     ["Log Range"] = true,
     ["Log range settings."] = true,
     ["Creature"] = true,
@@ -30,7 +31,16 @@ L:RegisterTranslations("enUS", function() return {
     ["You have entered %s. Do you want to enable logging for this zone/instance?"] = true,
     ["Enable"] = true,
     ["Disable"] = true,
-    ["Enabled"] = true,
-    ["Disabled"] = true,
+    ["Enabled"] = "|cff00ff00Enabled|r",
+    ["Disabled"] = "|cffff0000Disabled|r",
     ["Combat Log"] = true,
+	["Shift-Click to open configuration"] = true,
+	["Click to toggle combat logging"] = true,
+	["Prompt on new zone?"] = true,
+	["Prompt when entering a new zone?"] = true,	
+	["Targeting Range"] = true,
+	["Targeting Range. Default: 42"] = true,
+	["Targeting Radius"] = true,
+	["Targeting Radius. Default: 10"] = true,
+	
 } end)

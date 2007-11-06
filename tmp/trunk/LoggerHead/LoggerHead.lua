@@ -1,16 +1,16 @@
 local L = AceLibrary("AceLocale-2.2"):new("LoggerHead")
 local T = AceLibrary("Tourist-2.0")
-local Tablet = AceLibrary("Tablet-2.0")
 
-LoggerHead = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0","AceDB-2.0", "AceEvent-2.0", "FuBarPlugin-2.0")
+LoggerHead = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0","AceDB-2.0", "AceEvent-2.0", "FuBarPlugin-2.0","Sink-1.0")
 LoggerHead:RegisterDB("LoggerHeadDB")
 LoggerHead:RegisterDefaults("profile", {
-	log = {}
+	log = {}, prompt = true
 })
 
 LoggerHead.hasIcon = "Interface\\AddOns\\LoggerHead\\disabled"
 LoggerHead.hasNoText = true
 LoggerHead.defaultPosition = "RIGHT"
+LoggerHead.blizzardTooltip = true
 
 --- Totally ganked this function from oTweaks/Haste
 
@@ -32,6 +32,7 @@ local range = function(n, CVar, d, min, max, s)
 end
 
 LoggerHead.OnMenuRequest = {
+    name = 'Loggerhead',
 	type = "group",
 	args = {
 		instances = {
@@ -101,9 +102,16 @@ LoggerHead.OnMenuRequest = {
 				party = range(L["Party members"], "CombatLogRangeParty", L["Party members combat log range. Default: 50"], 5, 200, 5),
 				partypets = range(L["Party members' pet"], "CombatLogRangePartyPet", L["Party members' pet combat log range. Default: 50"], 5, 200, 5),
 				death = range(L["Death"], "CombatDeathLogRange", L["Range for death messages. Default: 60"], 5, 200, 5),
-				target = range("Target", "targetNearestDistance", "Max range for targeting. Default: 50", 30, 120, 5),
-				targetradius = range("Target Radius", "targetNearestDistanceRadius", "Max radius for targeting. Default: 10", 1, 25, 1),
+				target = range(L["Targeting Range"], "targetNearestDistance", L["Targeting Range. Default: 42"], 10, 50, 1),
+				targetradius = range(L["Targeting Radius"], "targetNearestDistanceRadius", L["Targeting Radius. Default: 10"], 1, 25, 1),
 			}
+		},
+		prompt = {
+			type = "toggle",
+			name = L["Prompt on new zone?"],
+			desc = L["Prompt when entering a new zone?"],
+			get = function() return LoggerHead.db.profile.prompt end,
+			set = function(v) LoggerHead.db.profile.prompt = v end,
 		}
 	}
 }
@@ -152,7 +160,8 @@ function LoggerHead:OnInitialize()
 				desc = L["Toggle Logging"],
 				get = function() return LoggerHead.db.profile.log[key] end,
 				set = function(v) LoggerHead.db.profile.log[key] = v end,
-			}
+                map = { [false] = "Disabled", [true] = "Enabled" },
+			}            
 		end
 	end
 	for zone in T:IterateOutland() do
@@ -177,6 +186,18 @@ function LoggerHead:OnInitialize()
 			}
 		end
 	end
+
+    if AceLibrary:HasInstance("Waterfall-1.0") then
+		AceLibrary("Waterfall-1.0"):Register('LoggerHead',
+			'aceOptions', LoggerHead.OnMenuRequest,
+			'title', L["LoggerHead"],
+			'treeLevels', 3,
+			'colorR', 0.8, 'colorG', 0.8, 'colorB', 0.8
+		)
+		self:RegisterChatCommand({"/loggerhead"}, function()
+			AceLibrary("Waterfall-1.0"):Open('LoggerHead')
+		end)
+    end
 
 	StaticPopupDialogs["LoggerHeadLogConfirm"] = {
 		text = "You have entered |cffd9d919%s.|r Do you want to enable logging for this zone/instance?",
@@ -231,7 +252,7 @@ end
 
 function LoggerHead:EnableLogging()
 	if (not LoggingCombat()) then
-		RaidWarningFrame:AddMessage("Combat Log Enabled")
+		self:Pour("Combat Log Enabled")
 		self:Print("Combat Log Enabled")
 	end
 	LoggingCombat(1)
@@ -241,7 +262,7 @@ end
 
 function LoggerHead:DisableLogging()
 	if (LoggingCombat()) then
-		RaidWarningFrame:AddMessage("Combat Log Disabled")
+		self:Pour("Combat Log Disabled")
 		self:Print("Combat Log Disabled")
 	end
 	LoggingCombat(0)
@@ -258,24 +279,21 @@ function LoggerHead:ToggleLogging()
 end
 
 function LoggerHead:OnClick()
-	self:ToggleLogging()
+	if IsShiftKeyDown() then
+		AceLibrary("Waterfall-1.0"):Open('LoggerHead')
+	else
+		self:ToggleLogging()
+	end
 end
 
 function LoggerHead:OnTooltipUpdate()
-	local cat = Tablet:AddCategory(
-		'columns', 2,
-		'child_textR', 1,
-		'child_textG', 1,
-		'child_textB', 0,
-		'child_text2R', 1,
-		'child_text2G', 1,
-		'child_text2B', 1
-	)
+	GameTooltip:AddLine(L["LoggerHead"])
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddDoubleLine(L["Combat Log"]..": ", LoggingCombat() and L["Enabled"] or L["Disabled"])
+	GameTooltip:AddLine(" ")
 
-	cat:AddLine(
-		'text',L["Combat Log"],
-		'text2',LoggingCombat() and L["Enabled"] or L["Disabled"]
-	)
+	GameTooltip:AddLine("Click to toggle combat logging", 0.2, 1, 0.2)
+	GameTooltip:AddLine("Shift-Click to open configuration", 0.2, 1, 0.2)
 	
 	--self:Print(zone,tostring(LoggerHead.db.profile.log[zone]));
 end

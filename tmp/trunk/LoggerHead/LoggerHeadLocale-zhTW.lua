@@ -33,4 +33,12 @@ L:RegisterTranslations("zhTW", function() return {
     ["Enabled"] = "啟動",
     ["Disabled"] = "關閉",
     ["Combat Log"] = "戰鬥日誌",
+	["Shift-Click to open configuration"] = true,
+	["Click to toggle combat logging"] = true,
+	["Prompt on new zone?"] = true,
+	["Prompt when entering a new zone?"] = true,	
+	["Targeting Range"] = true,
+	["Targeting Range. Default: 42"] = true,
+	["Targeting Radius"] = true,
+	["Targeting Radius. Default: 10"] = true,    
 } end)
