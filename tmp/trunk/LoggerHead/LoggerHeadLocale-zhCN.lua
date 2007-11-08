@@ -1,6 +1,9 @@
+--[cwdg] yleaf yaroot@gmail.com
+
 local L = AceLibrary("AceLocale-2.2"):new("LoggerHead")
 
 L:RegisterTranslations("zhCN", function() return {
+    ["LoggerHead"] = "LoggerHead",
     ["Log Range"] = "日志范围",
     ["Log range settings."] = "设定日志范围",
     ["Creature"] = "生物",
@@ -27,18 +30,18 @@ L:RegisterTranslations("zhCN", function() return {
     ["Eastern Kingdoms"] = "东部王国",
     ["Kalimdor"] = "卡利姆多",
     ["Outland"] = "外域",
-    ["You have entered %s. Do you want to enable logging for this zone/instance?"] = "你已经进入 %s. 您想要为这地区/副本记录战斗日志吗？",
+    ["You have entered %s. Do you want to enable logging for this zone/instance?"] = "你已经进入 %s. 你想要为这地区/副本记录战斗日志吗？",
     ["Enable"] = "启动",
     ["Disable"] = "关闭",
-    ["Enabled"] = "启动",
-    ["Disabled"] = "关闭",
+    ["Enabled"] = "|cff00ff00启动|r",
+    ["Disabled"] = "|cffff0000关闭|r",
     ["Combat Log"] = "战斗日志",
-	["Shift-Click to open configuration"] = true,
-	["Click to toggle combat logging"] = true,
-	["Prompt on new zone?"] = true,
-	["Prompt when entering a new zone?"] = true,	
-	["Targeting Range"] = true,
-	["Targeting Range. Default: 42"] = true,
-	["Targeting Radius"] = true,
-	["Targeting Radius. Default: 10"] = true,    
+	["Shift-Click to open configuration"] = "Shift 单击进入设置",
+	["Click to toggle combat logging"] = "单击开始记录战斗日志",
+	["Prompt on new zone?"] = "切换地区时提示？",
+	["Prompt when entering a new zone?"] = "切换地区的时候提示是否记录战斗日志",	
+	["Targeting Range"] = "[Tab]键正面选取范围",
+	["Targeting Range. Default: 42"] = "[Tab]键正面选取范围。默认42",
+	["Targeting Radius"] = "[Tab]键选取范围半径",
+	["Targeting Radius. Default: 10"] = "[Tab]键选取范围半径。默认10",
 } end)
