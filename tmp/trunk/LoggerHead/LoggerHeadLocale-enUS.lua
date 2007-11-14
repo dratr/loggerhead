@@ -41,6 +41,5 @@ L:RegisterTranslations("enUS", function() return {
 	["Targeting Range"] = true,
 	["Targeting Range. Default: 42"] = true,
 	["Targeting Radius"] = true,
-	["Targeting Radius. Default: 10"] = true,
-	
+	["Targeting Radius. Default: 10"] = true,    
 } end)

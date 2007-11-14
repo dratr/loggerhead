@@ -11,6 +11,8 @@ LoggerHead.hasIcon = "Interface\\AddOns\\LoggerHead\\disabled"
 LoggerHead.hasNoText = true
 LoggerHead.defaultPosition = "RIGHT"
 LoggerHead.blizzardTooltip = true
+LoggerHead.independentProfile = true
+LoggerHead.overrideMenu = true
 
 --- Totally ganked this function from oTweaks/Haste
 
@@ -36,7 +38,7 @@ LoggerHead.OnMenuRequest = {
 	type = "group",
 	args = {
 		instances = {
-			order = 100,
+			order = 1,
 			type = "group",
 			name = L["Instances"],
 			desc = L["Instance log settings"],
@@ -62,7 +64,7 @@ LoggerHead.OnMenuRequest = {
 			},
 		},
 		zones = {
-			order = 200,
+			order = 2,
 			type = "group",
 			name = L["Zones"],
 			desc = L["Zone log settings"],
@@ -87,9 +89,9 @@ LoggerHead.OnMenuRequest = {
 				}
 			},
 		},
-		spacer = { type = "header", order = 300 },
+		spacer = { type = "header", order = 3 },
 		combatlog = {
-			order = 400,
+			order = 4,
 			type = "group",
 			name = L["Log Range"],
 			desc = L["Log range settings."],
@@ -107,6 +109,7 @@ LoggerHead.OnMenuRequest = {
 			}
 		},
 		prompt = {
+            order = 5,
 			type = "toggle",
 			name = L["Prompt on new zone?"],
 			desc = L["Prompt when entering a new zone?"],
@@ -115,6 +118,25 @@ LoggerHead.OnMenuRequest = {
 		}
 	}
 }
+
+
+local fuBarArgs = AceLibrary("FuBarPlugin-2.0"):GetAceOptionsDataTable(LoggerHead)
+--~ if not LoggerHead.OnMenuRequest.args.fubar then
+--~ 	LoggerHead.OnMenuRequest.args.extrasSpacer =
+--~ 	{
+--~ 		type = 'header',
+--~ 		order = 500,
+--~ 	}
+--~ 	
+--~ 	LoggerHead.OnMenuRequest.args.fubar = 
+--~ 	{
+--~ 		type = "group",
+--~ 		name = L["Fubar Options"],
+--~ 		desc = L["FuBar options."],
+--~ 		args = fuBarArgs,
+--~ 		order = 600,
+--~ 	}
+--~ end
 
 	-- Methods
 
