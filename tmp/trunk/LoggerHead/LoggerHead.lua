@@ -16,16 +16,18 @@ LoggerHead.overrideMenu = true
 
 --- Totally ganked this function from oTweaks/Haste
 
+local is24 = GetSpellInfo and true or false
+
 local range = function(n, CVar, d, min, max, s)
 	return {
 		name = n,
 		type = 'range',
 		desc = d,
 		get = function()
-			return GetCVar(CVar)
+			return is24 and 0 or GetCVar(CVar)
 		end,
 		set = function(a1)
-			SetCVar(CVar, a1)
+			if not is24 then SetCVar(CVar, a1) end
 		end,
 		min = min,
 		max = max,
