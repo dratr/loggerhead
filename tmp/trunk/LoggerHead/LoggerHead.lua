@@ -262,7 +262,9 @@ function LoggerHead:ZoneChangedNewArea()
 	--self:Print(zone,tostring(LoggerHead.db.profile.log[zone]));
 
 	--local key = string.gsub(zone," ","")
-	if LoggerHead.db.profile.log[zone] == nil then
+
+	--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
+	if LoggerHead.db.profile.log[zone] == nil and LoggerHead.db.profile.prompt == true then
 		StaticPopup_Show("LoggerHeadLogConfirm", zone)
 		return
 	end
