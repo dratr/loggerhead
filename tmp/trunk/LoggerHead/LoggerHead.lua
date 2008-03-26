@@ -1,5 +1,5 @@
 local L = AceLibrary("AceLocale-2.2"):new("LoggerHead")
-local T = AceLibrary("Tourist-2.0")
+local T = LibStub("LibTourist-3.0")
 
 LoggerHead = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0","AceDB-2.0", "AceEvent-2.0", "FuBarPlugin-2.0","Sink-1.0")
 LoggerHead:RegisterDB("LoggerHeadDB")
