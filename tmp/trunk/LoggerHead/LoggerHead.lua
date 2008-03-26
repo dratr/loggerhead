@@ -14,27 +14,6 @@ LoggerHead.blizzardTooltip = true
 LoggerHead.independentProfile = true
 LoggerHead.overrideMenu = true
 
---- Totally ganked this function from oTweaks/Haste
-
-local is24 = GetSpellInfo and true or false
-
-local range = function(n, CVar, d, min, max, s)
-	return {
-		name = n,
-		type = 'range',
-		desc = d,
-		get = function()
-			return is24 and 0 or GetCVar(CVar)
-		end,
-		set = function(a1)
-			if not is24 then SetCVar(CVar, a1) end
-		end,
-		min = min,
-		max = max,
-		step = s
-	}
-end
-
 LoggerHead.OnMenuRequest = {
     name = 'Loggerhead',
 	type = "group",
@@ -92,24 +71,6 @@ LoggerHead.OnMenuRequest = {
 			},
 		},
 		spacer = { type = "header", order = 3 },
-		combatlog = {
-			order = 4,
-			type = "group",
-			name = L["Log Range"],
-			desc = L["Log range settings."],
-			args = {
-				creature = range(L["Creature"], "CombatLogRangeCreature", L["Creature combat log range. Default: 30"], 5, 200, 5),
-				friendlyplayers = range(L["Friendly players"], "CombatLogRangeFriendlyPlayers", L["Friendly players combat log range. Default: 50"], 5, 200, 5),
-				friendlyplayerspets = range(L["Friendly players' pet"], "CombatLogRangeFriendlyPlayersPets", L["Friendly players pet combat log range. Default: 50"], 5, 200, 5),
-				hostileplayers = range(L["Hostile players"], "CombatLogRangeHostilePlayers", L["Hostile players combat log range. Default: 50"], 5, 200, 5),
-				hostileplayerspets = range(L["Hostile players' pet"], "CombatLogRangeHostilePlayersPets", L["Hostile players pet combat log range. Default: 50"], 5, 200, 5),
-				party = range(L["Party members"], "CombatLogRangeParty", L["Party members combat log range. Default: 50"], 5, 200, 5),
-				partypets = range(L["Party members' pet"], "CombatLogRangePartyPet", L["Party members' pet combat log range. Default: 50"], 5, 200, 5),
-				death = range(L["Death"], "CombatDeathLogRange", L["Range for death messages. Default: 60"], 5, 200, 5),
-				target = range(L["Targeting Range"], "targetNearestDistance", L["Targeting Range. Default: 42"], 10, 50, 1),
-				targetradius = range(L["Targeting Radius"], "targetNearestDistanceRadius", L["Targeting Radius. Default: 10"], 1, 25, 1),
-			}
-		},
 		prompt = {
             order = 5,
 			type = "toggle",
