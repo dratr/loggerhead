@@ -13,6 +13,7 @@ LoggerHead.defaultPosition = "RIGHT"
 LoggerHead.blizzardTooltip = true
 LoggerHead.independentProfile = true
 LoggerHead.overrideMenu = true
+LoggerHead.hideWithoutStandby = true
 
 LoggerHead.OnMenuRequest = {
     name = 'Loggerhead',
@@ -101,7 +102,7 @@ local fuBarArgs = AceLibrary("FuBarPlugin-2.0"):GetAceOptionsDataTable(LoggerHea
 --~ 	}
 --~ end
 
-	-- Methods
+-- Methods
 
 function LoggerHead:OnInitialize()
 	for zone in T:IterateEasternKingdoms() do
