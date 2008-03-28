@@ -16,8 +16,8 @@ L:RegisterTranslations("zhTW", function() return {
 	["Enabled"] = "啟動",
 	["Disabled"] = "關閉",
 	["Combat Log"] = "戰鬥日誌",
-	["Shift-Click to open configuration"] = true,
-	["Click to toggle combat logging"] = true,
-	["Prompt on new zone?"] = true,
-	["Prompt when entering a new zone?"] = true,
+	["Shift-Click to open configuration"] = "shift 點擊設置",
+	["Click to toggle combat logging"] = "點擊開啟/關閉記錄戰斗日志",
+	["Prompt on new zone?"] = "切換地區時詢問?",
+	["Prompt when entering a new zone?"] = "切換地區時詢問是否記錄戰斗日志?",
 } end)
