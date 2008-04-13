@@ -280,8 +280,8 @@ function LoggerHead:OnTooltipUpdate()
 	GameTooltip:AddDoubleLine(L["Combat Log"]..": ", LoggingCombat() and L["Enabled"] or L["Disabled"])
 	GameTooltip:AddLine(" ")
 
-	GameTooltip:AddLine("Click to toggle combat logging", 0.2, 1, 0.2)
-	GameTooltip:AddLine("Shift-Click to open configuration", 0.2, 1, 0.2)
+	GameTooltip:AddLine(L["Click to toggle combat logging"], 0.2, 1, 0.2)
+	GameTooltip:AddLine(L["Shift-Click to open configuration"], 0.2, 1, 0.2)
 	
 	--self:Print(zone,tostring(LoggerHead.db.profile.log[zone]));
 end
