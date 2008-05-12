@@ -1,11 +1,12 @@
 local L = AceLibrary("AceLocale-2.2"):new("LoggerHead")
 local T = LibStub("LibTourist-3.0")
 
-LoggerHead = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0","AceDB-2.0", "AceEvent-2.0", "FuBarPlugin-2.0","Sink-1.0")
+LoggerHead = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0","AceDB-2.0", "AceEvent-2.0", "FuBarPlugin-2.0")
 LoggerHead:RegisterDB("LoggerHeadDB")
 LoggerHead:RegisterDefaults("profile", {
-	log = {}, prompt = true
+	log = {}, prompt = true, sink20OutputSink = "Default",
 })
+LibStub("LibSink-2.0"):Embed(LoggerHead)
 
 LoggerHead.hasIcon = "Interface\\AddOns\\LoggerHead\\disabled"
 LoggerHead.hasNoText = true
@@ -105,6 +106,9 @@ local fuBarArgs = AceLibrary("FuBarPlugin-2.0"):GetAceOptionsDataTable(LoggerHea
 -- Methods
 
 function LoggerHead:OnInitialize()
+	self:SetSinkStorage(self.db.profile)
+	self.OnMenuRequest.args.output = self:GetSinkAce2OptionsDataTable().output
+	
 	for zone in T:IterateEasternKingdoms() do
 		--LoggerHead:Print(instance)
 		if (T:IsInstance(zone)) then
