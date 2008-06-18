@@ -20,4 +20,6 @@ L:RegisterTranslations("zhCN", function() return {
 	["Click to toggle combat logging"] = "单击开启/关闭记录战斗日志",
 	["Prompt on new zone?"] = "切换地区时询问?",
 	["Prompt when entering a new zone?"] = "切换地区时询问是否记录战斗日志?",
+	["Combat Log Enabled"] = "开始导出战斗记录",
+	["Combat Log Disabled"] = "停止导出战斗记录",
 } end)

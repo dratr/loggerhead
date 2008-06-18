@@ -20,4 +20,6 @@ L:RegisterTranslations("enUS", function() return {
 	["Click to toggle combat logging"] = true,
 	["Prompt on new zone?"] = true,
 	["Prompt when entering a new zone?"] = true,
+	["Combat Log Enabled"] = true,
+	["Combat Log Disabled"] = true,
 } end)

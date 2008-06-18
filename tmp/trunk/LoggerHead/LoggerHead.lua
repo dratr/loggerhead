@@ -244,8 +244,8 @@ end
 
 function LoggerHead:EnableLogging()
 	if (not LoggingCombat()) then
-		self:Pour("Combat Log Enabled")
-		self:Print("Combat Log Enabled")
+		self:Pour(L["Combat Log Enabled"])
+		self:Print(L["Combat Log Enabled"])
 	end
 	LoggingCombat(1)
 	self:SetIcon("Interface\\AddOns\\LoggerHead\\enabled")
@@ -254,8 +254,8 @@ end
 
 function LoggerHead:DisableLogging()
 	if (LoggingCombat()) then
-		self:Pour("Combat Log Disabled")
-		self:Print("Combat Log Disabled")
+		self:Pour(L["Combat Log Disabled"])
+		self:Print(L["Combat Log Disabled"])
 	end
 	LoggingCombat(0)
 	self:SetIcon("Interface\\AddOns\\LoggerHead\\disabled")
