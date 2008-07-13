@@ -190,7 +190,7 @@ function LoggerHead:OnInitialize()
     end
 
 	StaticPopupDialogs["LoggerHeadLogConfirm"] = {
-		text = ["You have entered |cffd9d919%s.|r Do you want to enable logging for this zone/instance?"],
+		text = L["You have entered |cffd9d919%s.|r Do you want to enable logging for this zone/instance?"],
 		button1 = L["Enable"],
 		button2 = L["Disable"],
 		sound = "levelup2",
