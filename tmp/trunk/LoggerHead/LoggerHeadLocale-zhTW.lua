@@ -10,7 +10,7 @@ L:RegisterTranslations("zhTW", function() return {
 	["Eastern Kingdoms"] = "東部王國",
 	["Kalimdor"] = "卡林多",
 	["Outland"] = "外域",
-	["You have entered %s. Do you want to enable logging for this zone/instance?"] = "你已經進入 %s. 您想要為這地區/副本啟動紀錄日誌嗎?",
+	["You have entered |cffd9d919%s.|r Do you want to enable logging for this zone/instance?"] = "你已經進入 |cffd9d919%s.|r 您想要為這地區/副本啟動紀錄日誌嗎?",
 	["Enable"] = "啟動",
 	["Disable"] = "關閉",
 	["Enabled"] = "啟動",

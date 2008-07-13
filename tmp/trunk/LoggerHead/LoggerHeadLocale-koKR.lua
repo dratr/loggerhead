@@ -10,7 +10,7 @@ L:RegisterTranslations("koKR", function() return {
 	["Eastern Kingdoms"] = "동부 왕국",
 	["Kalimdor"] = "칼림도어",
 	["Outland"] = "아웃랜드",
-	["You have entered %s. Do you want to enable logging for this zone/instance?"] = "\"%s\"에 들어섰습니다. 이 지역(인스턴스던전)에 대한 로그를 파일로 기록하시겠습니까?",
+	["You have entered |cffd9d919%s.|r Do you want to enable logging for this zone/instance?"] = "\"|cffd9d919%s.|r\"에 들어섰습니다. 이 지역(인스턴스던전)에 대한 로그를 파일로 기록하시겠습니까?",
 	["Enable"] = "가능",
 	["Disable"] = "불가능",
 	["Enabled"] = "|cff00ff00가능|r",

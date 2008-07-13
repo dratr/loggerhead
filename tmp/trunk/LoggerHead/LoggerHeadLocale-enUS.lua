@@ -10,7 +10,7 @@ L:RegisterTranslations("enUS", function() return {
 	["Eastern Kingdoms"] = true,
 	["Kalimdor"] = true,
 	["Outland"] = true,
-	["You have entered %s. Do you want to enable logging for this zone/instance?"] = true,
+	["You have entered |cffd9d919%s.|r Do you want to enable logging for this zone/instance?"] = true,
 	["Enable"] = true,
 	["Disable"] = true,
 	["Enabled"] = "|cff00ff00Enabled|r",
