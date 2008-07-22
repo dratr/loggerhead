@@ -12,10 +12,12 @@
 ## X-LoadOn-Always: delayed
 
 embeds.xml
+LibDataBroker-1.1\libDataBroker-1.1.lua
+
 LoggerHeadLocale-enUS.lua
 LoggerHeadLocale-frFR.lua
 LoggerHeadLocale-zhTW.lua
 LoggerHeadLocale-zhCN.lua
 LoggerHeadLocale-koKR.lua
-LibDataBroker-1.1\libDataBroker-1.1.lua
+
 Loggerhead.lua
