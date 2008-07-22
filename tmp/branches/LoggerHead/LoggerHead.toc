@@ -10,10 +10,12 @@
 ## SavedVariables: LoggerHeadDB
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
-# embeds.xml
+
+embeds.xml
 LoggerHeadLocale-enUS.lua
-# LoggerHeadLocale-zhTW.lua
-# LoggerHeadLocale-zhCN.lua
-# LoggerHeadLocale-koKR.lua
+LoggerHeadLocale-frFR.lua
+LoggerHeadLocale-zhTW.lua
+LoggerHeadLocale-zhCN.lua
+LoggerHeadLocale-koKR.lua
 LibDataBroker-1.1\libDataBroker-1.1.lua
 Loggerhead.lua

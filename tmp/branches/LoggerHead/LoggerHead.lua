@@ -1,10 +1,10 @@
-LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.0","AceEvent-3.0","AceTimer-3.0","LibSink-2.0")
+LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceEvent-3.0","AceTimer-3.0","LibSink-2.0")
 
 local L = LibStub("AceLocale-3.0"):GetLocale("LoggerHead", true)
 local T = LibStub("LibTourist-3.0")
 
 LoggerHead.dd = LibStub("LibDataBroker-1.1"):NewDataObject("LoggerHead", {
-	icon = "Interface\\AddOns\\LoggerHead3\\disabled", 
+	icon = "Interface\\AddOns\\LoggerHead\\disabled", 
 	label = L["Combat Log"], 
 	text = L["Disabled"],
 	OnClick = function(self, button)
