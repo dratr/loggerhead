@@ -7,10 +7,13 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 
 <Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
 <Include file="Libs\AceAddon-3.0\AceAddon-3.0.xml" />
+<Include file="Libs\AceGui-3.0\AceGui-3.0.xml" />
 <Include file="Libs\AceConfig-3.0\AceConfig-3.0.xml" />
+<Include file="Libs\AceConsole-3.0\AceConsole-3.0.xml" />
 <Include file="Libs\AceDB-3.0\AceDB-3.0.xml" />
+<Include file="Libs\AceLocale-3.0\AceLocale-3.0.xml" />
 <Include file="Libs\AceTimer-3.0\AceTimer-3.0.xml" />
 <Include file="Libs\AceEvent-3.0\AceEvent-3.0.xml" />
-<include file="libs\LibSink-2.0\lib.xml"/>
+<include file="libs\LibSink-2.0\LibSink-2.0\lib.xml"/>
 
 </Ui>
