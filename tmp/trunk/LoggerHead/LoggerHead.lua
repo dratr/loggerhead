@@ -13,7 +13,7 @@ LoggerHead.dd = LibStub("LibDataBroker-1.1"):NewDataObject("LoggerHead", {
 		end
 		
 		if button == "LeftButton" then
-			if (LoggingCombat()) then
+			if LoggingCombat() then
 				LoggerHead:DisableLogging()
 			else
 				LoggerHead:EnableLogging()
@@ -27,7 +27,8 @@ local defaults = {
 	profile = {
 		log = {}, 
 		prompt = true,
-		sink = {}
+		default = false,
+		sink = {},
 	}
 }
 
@@ -47,18 +48,18 @@ options = {
 					desc = L["Instance log settings"],
 					args = {},
 				},
- 				kalimdor = {
- 					type = "group",
- 					name = L["Kalimdor"],
- 					desc = L["Instance log settings"],
- 					args = {},
- 				},
- 				outland = {
- 					type = "group",
- 					name = L["Outland"],
- 					desc = L["Instance log settings"],
- 					args = {},
-				}
+				kalimdor = {
+					type = "group",
+					name = L["Kalimdor"],
+					desc = L["Instance log settings"],
+					args = {},
+				},
+				outland = {
+					type = "group",
+					name = L["Outland"],
+					desc = L["Instance log settings"],
+					args = {},
+				},
 			},
 		},
 		zones = {
@@ -73,96 +74,94 @@ options = {
 					desc = L["Zone log settings"],
 					args = {},
 				},
- 				kalimdor = {
- 					type = "group",
- 					name = L["Kalimdor"],
- 					desc = L["Zone log settings"],
- 					args = {},
- 				},
- 				outland = {
- 					type = "group",
- 					name = L["Outland"],
- 					desc = L["Zone log settings"],
- 					args = {},
- 				}
+				kalimdor = {
+					type = "group",
+					name = L["Kalimdor"],
+					desc = L["Zone log settings"],
+					args = {},
+				},
+				outland = {
+					type = "group",
+					name = L["Outland"],
+					desc = L["Zone log settings"],
+					args = {},
+				},
 			},
 		},
 		--spacer = { type = "header", order = 3 },
 		prompt = {
-            order = 5,
+			order = 5,
 			type = "toggle",
 			name = L["Prompt on new zone?"],
 			desc = L["Prompt when entering a new zone?"],
 			get = function() return LoggerHead.db.profile.prompt end,
 			set = function(v) LoggerHead.db.profile.prompt = not LoggerHead.db.profile.prompt end,
-		}
-	}
+		},
+	},
 }
 
 
 function LoggerHead:OnInitialize()
 	for zone in T:IterateEasternKingdoms() do
-		--LoggerHead:Print(instance)
-		local key = string.gsub(zone," ","_")
-		if (T:IsInstance(zone)) then
+		local key = zone:gsub(" ", "_")
+		if T:IsInstance(zone) then
 			options.args.instances.args.easternkingdoms.args[key] = {
 				type = "toggle",
 				name = zone,
 				desc = L["Toggle Logging"],
-				get = function() return LoggerHead.db.profile.log[key] end,
-				set = function() LoggerHead.db.profile.log[key] = not LoggerHead.db.profile.log[key] end,
+				get = function() return LoggerHead.db.profile.log[zone] end,
+				set = function(v) LoggerHead.db.profile.log[zone] = not LoggerHead.db.profile.log[zone] end,
 			}
 		else
 				options.args.zones.args.easternkingdoms.args[key] = {
 				type = "toggle",
 				name = zone,
 				desc = L["Toggle Logging"],
-				get = function() return LoggerHead.db.profile.log[key] end,
-				set = function() LoggerHead.db.profile.log[key] = not LoggerHead.db.profile.log[key] end,
+				get = function() return LoggerHead.db.profile.log[zone] end,
+				set = function(v) LoggerHead.db.profile.log[zone] = not LoggerHead.db.profile.log[zone] end,
 			}
 		end
 	end
- 	for zone in T:IterateKalimdor() do
- 		--LoggerHead:Print(instance)
- 		local key = string.gsub(zone," ","_")
- 		if (T:IsInstance(zone)) then
- 			options.args.instances.args.kalimdor.args[key] = {
- 				type = "toggle",
- 				name = zone,
- 				desc = L["Toggle Logging"],
- 				get = function() return LoggerHead.db.profile.log[key] end,
- 				set = function() LoggerHead.db.profile.log[key] = not LoggerHead.db.profile.log[key] end,
- 			}
- 		else
- 				options.args.zones.args.kalimdor.args[key] = {
- 				type = "toggle",
- 				name = zone,
- 				desc = L["Toggle Logging"],
- 				get = function() return LoggerHead.db.profile.log[key] end,
- 				set = function() LoggerHead.db.profile.log[key] = not LoggerHead.db.profile.log[key] end,
- 			}            
- 		end
- 	end
- 	for zone in T:IterateOutland() do
- 		local key = string.gsub(zone," ","_")
- 		if (T:IsInstance(zone)) then
- 			options.args.instances.args.outland.args[key] = {
- 				type = "toggle",
- 				name = zone,
- 				desc = L["Toggle Logging"],
- 				get = function() return LoggerHead.db.profile.log[key] end,
- 				set = function() LoggerHead.db.profile.log[key] = not LoggerHead.db.profile.log[key] end,
- 			}
- 		else
- 			options.args.zones.args.outland.args[key] = {
- 				type = "toggle",
- 				name = zone,
- 				desc = L["Toggle Logging"],
- 				get = function() return LoggerHead.db.profile.log[key] end,
- 				set = function() LoggerHead.db.profile.log[key] = not LoggerHead.db.profile.log[key] end,
- 			}
- 		end
- 	end
+	for zone in T:IterateKalimdor() do
+		local key = zone:gsub(" ", "_")
+		if T:IsInstance(zone) then
+			options.args.instances.args.kalimdor.args[key] = {
+				type = "toggle",
+				name = zone,
+				desc = L["Toggle Logging"],
+				get = function() return LoggerHead.db.profile.log[zone] end,
+				set = function(v) LoggerHead.db.profile.log[zone] = not LoggerHead.db.profile.log[zone] end,
+			}
+		else
+				options.args.zones.args.kalimdor.args[key] = {
+				type = "toggle",
+				name = zone,
+				desc = L["Toggle Logging"],
+				get = function() return LoggerHead.db.profile.log[zone] end,
+				set = function(v) LoggerHead.db.profile.log[zone] = not LoggerHead.db.profile.log[zone] end,
+			}
+		end
+	end
+	for zone in T:IterateOutland() do
+		local key = zone:gsub(" ", "_")
+		if T:IsInstance(zone) then
+			options.args.instances.args.outland.args[key] = {
+				type = "toggle",
+				name = zone,
+				desc = L["Toggle Logging"],
+				get = function() return LoggerHead.db.profile.log[zone] end,
+				set = function(v) LoggerHead.db.profile.log[zone] = not LoggerHead.db.profile.log[zone] end,
+			}
+		else
+			options.args.zones.args.outland.args[key] = {
+				type = "toggle",
+				name = zone,
+				desc = L["Toggle Logging"],
+				get = function() return LoggerHead.db.profile.log[zone] end,
+				set = function(v) LoggerHead.db.profile.log[zone] = not LoggerHead.db.profile.log[zone] end,
+			}
+		end
+	end
 	
 	StaticPopupDialogs["LoggerHeadLogConfirm"] = {
 		text = L["You have entered |cffd9d919%s|r. Do you want to enable logging for this zone/instance?"],
@@ -173,17 +172,19 @@ function LoggerHead:OnInitialize()
 		hideOnEscape = 1,
 		timeout = 0,
 		OnAccept = function()
-			LoggerHead.db.profile.log[string.gsub(GetRealZoneText()," ","_")] = true
+			LoggerHead.db.profile.log[GetRealZoneText()] = true
 			self:ZoneChangedNewArea()
 		end,
 		OnCancel = function()
-			LoggerHead.db.profile.log[string.gsub(GetRealZoneText()," ","_")] = false
+			LoggerHead.db.profile.log[GetRealZoneText()] = false
 			self:ZoneChangedNewArea()
 		end
 	}
 	
-	LoggerHead.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
+	self.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
 	db = self.db.profile
+	
+	options.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 	
 	self:SetSinkStorage(self.db.profile.sink)
 	options.args.output = self:GetSinkAce3OptionsDataTable()
@@ -213,15 +214,13 @@ function LoggerHead:ZoneChangedNewArea()
 
 	--self:Print(zone,tostring(LoggerHead.db.profile.log[zone]));
 
-	local key = string.gsub(zone," ","_")
-
 	--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
-	if LoggerHead.db.profile.log[key] == nil and LoggerHead.db.profile.prompt == true then
+	if LoggerHead.db.profile.log[zone] == nil and LoggerHead.db.profile.prompt == true then
 		StaticPopup_Show("LoggerHeadLogConfirm", zone)
 		return
 	end
 
-	if LoggerHead.db.profile.log[key] then
+	if LoggerHead.db.profile.log[zone] then
 		self:EnableLogging()
 	else
 		self:DisableLogging()
@@ -229,7 +228,7 @@ function LoggerHead:ZoneChangedNewArea()
 end
 
 function LoggerHead:EnableLogging()
-	if (not LoggingCombat()) then
+	if not LoggingCombat() then
 		self:Pour(L["Combat Log Enabled"])
 	end
 	LoggingCombat(1)
@@ -239,7 +238,7 @@ function LoggerHead:EnableLogging()
 end
 
 function LoggerHead:DisableLogging()
-	if (LoggingCombat()) then
+	if LoggingCombat() then
 		self:Pour(L["Combat Log Disabled"])
 	end
 	LoggingCombat(0)
@@ -247,5 +246,3 @@ function LoggerHead:DisableLogging()
 	self.dd.icon = "Interface\\AddOns\\LoggerHead\\disabled"
 	self.dd.text = L["Disabled"]
 end
-
-

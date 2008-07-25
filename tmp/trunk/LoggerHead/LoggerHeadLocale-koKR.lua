@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("LoggerHead", "koKR")
+if not L then return end
 
-
-L["LoggerHead"] = "LoggerHead"
+--L["LoggerHead"] = true
 L["Toggle Logging"] = "로그 파일 기록 토글"
 L["Instances"] = "인스턴스"
 L["Instance log settings"] = "인스턴스 로그 설정"
@@ -20,3 +20,5 @@ L["Shift-Click to open configuration"] = "쉬프트-클릭: 설정창 열기"
 L["Click to toggle combat logging"] = "클릭: 전투 로그 토글"
 L["Prompt on new zone?"] = "새로운 지역 바로 기록"
 L["Prompt when entering a new zone?"] = "새로운 지역에 들어서면 로그 기록을 바로 시작하시겠습니까?"
+--L["Combat Log Enabled"] = true
+--L["Combat Log Disabled"] = true

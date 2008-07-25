@@ -1,6 +1,7 @@
 ﻿local L = LibStub("AceLocale-3.0"):NewLocale("LoggerHead", "frFR")
+if not L then return end
 
-
+--L["LoggerHead"] = true
 L["Toggle Logging"] = "Activer/Désactiver les logs"
 L["Instances"] = "Instances"
 L["Instance log settings"] = "Paramètres de log d'instance"
@@ -19,3 +20,5 @@ L["Shift-Click to open configuration"] = "Maj-Clic pour ouvrir la configuration"
 L["Click to toggle combat logging"] = "Clic pour activer/désactiver le log de combat"
 L["Prompt on new zone?"] = "Demander dans une nouvelle zone ?"
 L["Prompt when entering a new zone?"] = "Demander en entrant dans une nouvelle zone ?"
+--L["Combat Log Enabled"] = true
+--L["Combat Log Disabled"] = true

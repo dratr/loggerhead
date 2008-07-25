@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("LoggerHead", "zhTW")
+if not L then return end
 
-
-L["LoggerHead"] = "LoggerHead"
+--L["LoggerHead"] = true
 L["Toggle Logging"] = "開關日誌"
 L["Instances"] = "副本"
 L["Instance log settings"] = "設定副本日誌"
@@ -20,3 +20,5 @@ L["Shift-Click to open configuration"] = "shift 點擊設置"
 L["Click to toggle combat logging"] = "點擊開啟/關閉記錄戰斗日志"
 L["Prompt on new zone?"] = "切換地區時詢問?"
 L["Prompt when entering a new zone?"] = "切換地區時詢問是否記錄戰斗日志?"
+--L["Combat Log Enabled"] = true
+--L["Combat Log Disabled"] = true

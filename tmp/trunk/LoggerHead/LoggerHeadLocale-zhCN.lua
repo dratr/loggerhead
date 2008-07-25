@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("LoggerHead", "zhCN")
+if not L then return end
 
-
-L["LoggerHead"] = "LoggerHead"
+--L["LoggerHead"] = true
 L["Toggle Logging"] = "开关日志"
 L["Instances"] = "副本"
 L["Instance log settings"] = "设定副本日志"
