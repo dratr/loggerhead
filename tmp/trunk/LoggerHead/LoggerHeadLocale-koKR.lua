@@ -1,4 +1,4 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("LoggerHead", "koKR", true)
+local L = LibStub("AceLocale-3.0"):NewLocale("LoggerHead", "koKR")
 
 
 L["LoggerHead"] = "LoggerHead"

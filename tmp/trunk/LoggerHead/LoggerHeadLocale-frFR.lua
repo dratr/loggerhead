@@ -1,5 +1,4 @@
-﻿local L = LibStub("AceLocale-3.0"):NewLocale("LoggerHead", "frFR", true)
-
+﻿local L = LibStub("AceLocale-3.0"):NewLocale("LoggerHead", "frFR")
 
 
 L["Toggle Logging"] = "Activer/Désactiver les logs"
