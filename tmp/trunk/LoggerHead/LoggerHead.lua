@@ -1,4 +1,4 @@
-LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.0","AceEvent-3.0","AceTimer-3.0","LibSink-2.0")
+local LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.0","AceEvent-3.0","AceTimer-3.0","LibSink-2.0")
 
 local L = LibStub("AceLocale-3.0"):GetLocale("LoggerHead", true)
 local T = LibStub("LibTourist-3.0")
@@ -32,8 +32,8 @@ local defaults = {
 	}
 }
 
-options = {
-    name = 'Loggerhead',
+local options = {
+	name = 'Loggerhead',
 	type = "group",
 	args = {
 		instances = {
