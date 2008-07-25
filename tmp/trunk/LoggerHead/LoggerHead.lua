@@ -182,7 +182,7 @@ function LoggerHead:OnInitialize()
 		end
 	}
 	
-	LoggerHead.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults)
+	LoggerHead.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
 	db = self.db.profile
 	
 	self:SetSinkStorage(self.db.profile.sink)
