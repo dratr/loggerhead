@@ -1,17 +1,17 @@
 package-as: LoggerHead
 
 externals:
-    /LibTourist-3.0: http://svn.wowace.com/wowace/trunk/LibTourist-3.0
-    /AceEvent-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceEvent-3.0
-    /CallbackHandler-1.0: http://svn.wowace.com/wowace/trunk/Ace3/CallbackHandler-1.0
-    /LibStub: http://svn.wowace.com/wowace/tags/LibStub/1.0
-    /LibBabble-Zone-3.0: http://svn.wowace.com/wowace/trunk/LibBabble-Zone-3.0
-    /LibSink-2.0: http://svn.wowace.com/wowace/trunk/LibSink-2.0
-    /AceTimer-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceTimer-3.0
-    /AceAddon-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceAddon-3.0
-    /AceConfig-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceConfig-3.0
-    /AceDBOptions-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceDBOptions-3.0
-    /AceConsole-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceConsole-3.0
-    /AceLocale-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceLocale-3.0
-    /AceGUI-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceGUI-3.0
-    /AceDB-3.0: http://svn.wowace.com/wowace/trunk/Ace3/AceDB-3.0
+    Libs/AceAddon-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceAddon-3.0
+    Libs/AceConfig-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceConfig-3.0
+    Libs/AceConsole-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceConsole-3.0
+    Libs/AceDB-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceDB-3.0
+    Libs/AceDBOptions-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceDBOptions-3.0
+    Libs/AceEvent-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceEvent-3.0
+    Libs/AceGUI-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceGUI-3.0
+    Libs/AceLocale-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceLocale-3.0
+    Libs/AceTimer-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceTimer-3.0
+    Libs/CallbackHandler-1.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/CallbackHandler-1.0
+    Libs/LibBabble-Zone-3.0: svn://svn.wowace.com/wow/lib-babble-zone-3-0/mainline/trunk
+    Libs/LibSink-2.0: svn://svn.wowace.com/wow/lib-sink-2-0/mainline/trunk
+    Libs/LibStub: svn://svn.wowace.com/wow/libstub/mainline/tags/1.0
+    Libs/LibTourist-3.0: svn://svn.wowace.com/wow/lib-tourist-3-0/mainline/trunk
