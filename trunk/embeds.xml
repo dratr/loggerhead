@@ -2,8 +2,9 @@
 ..\FrameXML\UI.xsd">
 
 <Script file="Libs\LibStub\LibStub.lua"/>
-<script file="Libs\LibBabble-Zone-3.0\LibBabble-Zone-3.0.lua"/>
-<script file="Libs\LibTourist-3.0\LibTourist-3.0.lua"/>
+<Script file="Libs\LibBabble-Zone-3.0\LibBabble-Zone-3.0.lua"/>
+<Script file="Libs\LibTourist-3.0\LibTourist-3.0.lua"/>
+<Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
 
 <Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
 <Include file="Libs\AceAddon-3.0\AceAddon-3.0.xml"/>
@@ -15,6 +16,6 @@
 <Include file="Libs\AceLocale-3.0\AceLocale-3.0.xml"/>
 <Include file="Libs\AceTimer-3.0\AceTimer-3.0.xml"/>
 <Include file="Libs\AceEvent-3.0\AceEvent-3.0.xml"/>
-<include file="Libs\LibSink-2.0\LibSink-2.0\lib.xml"/>
+<Include file="Libs\LibSink-2.0\LibSink-2.0\lib.xml"/>
 
 </Ui>
