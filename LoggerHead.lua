@@ -34,6 +34,12 @@ local defaults = {
 }
 
 local function createoptions()
+	local Kalimdor, Eastern_Kingdoms, Outland, Northrend = GetMapContinents()
+
+--	LoggerHead:Print(Kalimdor, Eastern_Kingdoms, Outland, Northrend)
+
+	Kalimdor, Eastern_Kingdoms, Outland, Northrend = Kalimdor:gsub(" ",""), Eastern_Kingdoms:gsub(" ",""), Outland:gsub(" ",""), Northrend:gsub(" ","")
+
 	local options = {
 		name = 'Loggerhead',
 		type = "group",
@@ -44,25 +50,25 @@ local function createoptions()
 				name = L["Instances"],
 				desc = L["Instance log settings"],
 				args = {
-					EasternKingdoms = {
+					[Eastern_Kingdoms] = {
 						type = "group",
 						name = BZ["Eastern Kingdoms"],
 						desc = L["Instance log settings"],
 						args = {},
 					},
-					Kalimdor = {
+					[Kalimdor] = {
 						type = "group",
 						name = BZ["Kalimdor"],
 						desc = L["Instance log settings"],
 						args = {},
 					},
-					Outland = {
+					[Outland] = {
 						type = "group",
 						name = BZ["Outland"],
 						desc = L["Instance log settings"],
 						args = {},
 					},
-					Northrend = {
+					[Northrend] = {
 						type = "group",
 						name = BZ["Northrend"],
 						desc = L["Instance log settings"],
@@ -76,28 +82,28 @@ local function createoptions()
 				name = L["Zones"],
 				desc = L["Zone log settings"],
 				args = {
-					EasternKingdoms = {
+					[Eastern_Kingdoms] = {
 						type = "group",
 						name = BZ["Eastern Kingdoms"],
-						desc = L["Instance log settings"],
+						desc = L["Zone log settings"],
 						args = {},
 					},
-					Kalimdor = {
+					[Kalimdor] = {
 						type = "group",
 						name = BZ["Kalimdor"],
-						desc = L["Instance log settings"],
+						desc = L["Zone log settings"],
 						args = {},
 					},
-					Outland = {
+					[Outland] = {
 						type = "group",
 						name = BZ["Outland"],
-						desc = L["Instance log settings"],
+						desc = L["Zone log settings"],
 						args = {},
 					},
-					Northrend = {
+					[Northrend] = {
 						type = "group",
 						name = BZ["Northrend"],
-						desc = L["Instance log settings"],
+						desc = L["Zone log settings"],
 						args = {},
 					},
 				},
@@ -117,16 +123,23 @@ local function createoptions()
 	for zone in T:IterateZonesAndInstances() do
 		local continent = (T:GetContinent(zone)):gsub(" ","")
 
+		--LoggerHead:Print(continent)
+
 		if (continent ~= UNKNOWN) then
-			local type = T:IsInstance(zone) and "instances" or "zones"	
+			local type = T:IsInstance(zone) and "instances" or "zones"
 			local key = zone:gsub(" ", "_")
-			options.args[type].args[continent].args[key] = {
-				type = "toggle",
-				name = zone,
-				desc = L["Toggle Logging"],
-				get = function() return LoggerHead.db.profile.log[zone] end,
-				set = function(v) LoggerHead.db.profile.log[zone] = not LoggerHead.db.profile.log[zone] end,
-			}
+
+			--LoggerHead:Print(continent,tostring(options.args[type].args[continent]))
+
+			if (options.args[type] and options.args[type].args[continent]) then
+				options.args[type].args[continent].args[key] = {
+					type = "toggle",
+					name = zone,
+					desc = L["Toggle Logging"],
+					get = function() return LoggerHead.db.profile.log[zone] end,
+					set = function(v) LoggerHead.db.profile.log[zone] = not LoggerHead.db.profile.log[zone] end,
+				}
+			end
 		end
 	end
 
