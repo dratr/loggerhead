@@ -8,6 +8,7 @@ LoggerHead.dd = LibStub("LibDataBroker-1.1"):NewDataObject("LoggerHead", {
 	icon = "Interface\\AddOns\\LoggerHead\\disabled", 
 	label = L["Combat Log"], 
 	text = L["Disabled"],
+	type = "launcher",
 	OnClick = function(self, button)
 		if button == "RightButton" then
 			LoggerHead:LoadConfig()
