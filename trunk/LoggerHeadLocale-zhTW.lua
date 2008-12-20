@@ -20,5 +20,5 @@ L["Shift-Click to open configuration"] = "shift 點擊設置"
 L["Click to toggle combat logging"] = "點擊開啟/關閉記錄戰斗日志"
 L["Prompt on new zone?"] = "切換地區時詢問?"
 L["Prompt when entering a new zone?"] = "切換地區時詢問是否記錄戰斗日志?"
---L["Combat Log Enabled"] = true
---L["Combat Log Disabled"] = true
+L["Combat Log Enabled"] = "開始記錄戰斗日志"
+L["Combat Log Disabled"] = "停止記錄戰斗日志"
