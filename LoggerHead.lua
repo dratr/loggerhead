@@ -142,6 +142,13 @@ function LoggerHead:EnableLogging()
 	end
 	LoggingCombat(1)
 
+	if LoggerHead.db.profile.chat then
+		if not LoggingChat() then
+			self:Pour(CHATLOGENABLED)
+		end
+		LoggingChat(1)
+	end
+
 	self.dd.icon = "Interface\\AddOns\\LoggerHead\\enabled"
 	self.dd.text = "|cff00ff00"..L["Enabled"].."|r"
 end
@@ -151,6 +158,14 @@ function LoggerHead:DisableLogging()
 		self:Pour(COMBATLOGDISABLED)
 	end
 	LoggingCombat(0)
+
+	if LoggerHead.db.profile.chat then
+		if LoggingChat() then
+			self:Pour(CHATLOGDISABLED)
+		end
+		LoggingChat(0)
+	end
+	
 
 	self.dd.icon = "Interface\\AddOns\\LoggerHead\\disabled"
 	self.dd.text = "|cffff0000"..L["Disabled"].."|r"
@@ -208,6 +223,14 @@ function LoggerHead.GenerateOptionsInternal()
 						desc = L["Prompt when entering a new zone?"],
 						get = function() return LoggerHead.db.profile.prompt end,
 						set = function(v) LoggerHead.db.profile.prompt = not LoggerHead.db.profile.prompt end,
+					},
+					chatlog = {
+						order = 5,
+						type = "toggle",
+						name = L["Enable Chat Logging"],
+						desc = L["Enable Chat Logging whenever the Combat Log is enabled"],
+						get = function() return LoggerHead.db.profile.chat end,
+						set = function(v) LoggerHead.db.profile.chat = not LoggerHead.db.profile.chat end,
 					},
 					minimap = {
 						type = "toggle",
