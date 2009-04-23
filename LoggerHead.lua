@@ -129,7 +129,7 @@ function LoggerHead:ZoneChangedNewArea()
 		return
 	end
 
-	if LoggerHead.db.profile.log[zone][GetInstanceDifficulty()] then
+	if LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][GetInstanceDifficulty()] then
 		self:EnableLogging()
 	else
 		self:DisableLogging()
