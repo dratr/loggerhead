@@ -1,0 +1,28 @@
+﻿## Interface: 30100
+## Title: LoggerHead
+## Notes: Automatically turns on the combat log for selected instances
+## Notes-ruRU: Автоматически включает запись лога боя в выбранных подземельях
+## Author: Sano
+## X-eMail: rsmozang@gmail.com
+## X-Category: Miscellaneous
+## X-Embeds: Ace3, LibTourist-3.0, LibSink-2.0, LibBabble-Zone-3.0
+## Version: 3.1.0.@project-revision@
+## OptionalDeps: Ace3, LibTourist-3.0, LibBabble-Zone-3.0, LibSink-2.0
+## SavedVariables: LoggerHeadDB
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+
+#@no-lib-strip@
+embeds.xml
+#@end-no-lib-strip@
+
+LibDataBroker-1.1\libDataBroker-1.1.lua
+
+LoggerHeadLocale-enUS.lua
+LoggerHeadLocale-frFR.lua
+LoggerHeadLocale-zhTW.lua
+LoggerHeadLocale-zhCN.lua
+LoggerHeadLocale-koKR.lua
+LoggerHeadLocale-ruRU.lua
+
+Loggerhead.lua
