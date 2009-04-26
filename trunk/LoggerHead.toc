@@ -12,11 +12,13 @@
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
 
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\LibDataBroker-1.1\libDataBroker-1.1.lua
+
 #@no-lib-strip@
 embeds.xml
 #@end-no-lib-strip@
-
-LibDataBroker-1.1\libDataBroker-1.1.lua
 
 LoggerHeadLocale-enUS.lua
 LoggerHeadLocale-frFR.lua

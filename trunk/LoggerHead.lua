@@ -3,34 +3,8 @@ local LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.
 local L = LibStub("AceLocale-3.0"):GetLocale("LoggerHead", true)
 local T = LibStub("LibTourist-3.0")
 local BZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
-
-local icon = LibStub("LibDBIcon-1.0", true)
-
-LoggerHead.dd = LibStub("LibDataBroker-1.1"):NewDataObject("LoggerHead", {
-	icon = "Interface\\AddOns\\LoggerHead\\disabled",
-	label = COMBAT_LOG,
-	text = COMBATLOGDISABLED,
-	type = "data source",
-	OnClick = function(self, button)
-		if button == "RightButton" then
-			LoggerHead:ShowConfig()
-		end
-
-		if button == "LeftButton" then
-			if LoggingCombat() then
-				LoggerHead:DisableLogging()
-			else
-				LoggerHead:EnableLogging()
-			end
-		end
-	end,
-	OnTooltipShow = function(tooltip)
-		tooltip:AddLine("LoggerHead")
-		tooltip:AddLine(" ")
-		tooltip:AddLine(L["Click to toggle combat logging"])
-		tooltip:AddLine(L["Right-click to open the options menu"])
-	end
-})
+local LDB = LibStub("LibDataBroker-1.1", true)
+local LDBIcon = LDB and LibStub("LibDBIcon-1.0", true)
 
 local db
 local defaults = {
@@ -41,6 +15,8 @@ local defaults = {
 		sink = {},
 		minimap = {
 			hide = false,
+			minimapPos = 250,
+			radius = 80,
 		},
 	}
 }
@@ -86,17 +62,50 @@ function LoggerHead:OnInitialize()
 			end
 		end
 
+		if not db.minimap then
+			db.minimap = {
+				hide = false,
+				minimapPos = 250,
+				radius = 80,
+			}
+		end
+
 		db.version = 2
 	end
 
-	if not db.minimap then
-		db.minimap = {
-			hide = false,
-		}
-	end
+	print(LDB, LDBIcon)
 
-	if icon then
-		icon:Register("LoggerHead", LoggerHead.dd, db.minimap)
+	-- LDB launcher
+	if LDB then
+		LoggerHeadDS = LDB:NewDataObject("LoggerHead", {
+			icon = "Interface\\AddOns\\LoggerHead\\disabled",
+			label = COMBAT_LOG,
+			text = COMBATLOGDISABLED,
+			type = "data source",
+			OnClick = function(self, button)
+				if button == "RightButton" then
+					LoggerHead:ShowConfig()
+				end
+		
+				if button == "LeftButton" then
+					if LoggingCombat() then
+						LoggerHead:DisableLogging()
+					else
+						LoggerHead:EnableLogging()
+					end
+				end
+			end,
+			OnTooltipShow = function(tooltip)
+				tooltip:AddLine("LoggerHead")
+				tooltip:AddLine(" ")
+				tooltip:AddLine(L["Click to toggle combat logging"])
+				tooltip:AddLine(L["Right-click to open the options menu"])
+			end
+		})
+		if LDBIcon then
+			LDBIcon:Register("LoggerHead", LoggerHeadDS, db.minimap)
+			if (not db.minimap.hide) then LDBIcon:Show("LoggerHead") end
+		end
 	end
 
 	self:SetupOptions()
@@ -149,8 +158,8 @@ function LoggerHead:EnableLogging()
 		LoggingChat(1)
 	end
 
-	self.dd.icon = "Interface\\AddOns\\LoggerHead\\enabled"
-	self.dd.text = "|cff00ff00"..L["Enabled"].."|r"
+	LoggerHeadDS.icon = "Interface\\AddOns\\LoggerHead\\enabled"
+	LoggerHeadDS.text = "|cff00ff00"..L["Enabled"].."|r"
 end
 
 function LoggerHead:DisableLogging()
@@ -167,8 +176,8 @@ function LoggerHead:DisableLogging()
 	end
 	
 
-	self.dd.icon = "Interface\\AddOns\\LoggerHead\\disabled"
-	self.dd.text = "|cffff0000"..L["Disabled"].."|r"
+	LoggerHeadDS.icon = "Interface\\AddOns\\LoggerHead\\disabled"
+	LoggerHeadDS.text = "|cffff0000"..L["Disabled"].."|r"
 end
 
 function LoggerHead:ShowConfig()
@@ -238,16 +247,15 @@ function LoggerHead.GenerateOptionsInternal()
 						desc = L["Toggle showing or hiding the minimap icon."],
 						get = function() return not LoggerHead.db.profile.minimap.hide end,
 						set = function(info, v)
-							local hide = not v
-							LoggerHead.db.profile.minimap.hide = hide
-							if hide then
-								icon:Hide("LoggerHead")
+							LoggerHead.db.profile.minimap.hide = not v
+							if v then
+								LDBIcon:Show("LoggerHead")
 							else
-								icon:Show("LoggerHead")
+								LDBIcon:Hide("LoggerHead")
 							end
 						end,
 						order = 6,
-						hidden = function() return not icon or not icon:IsRegistered("LoggerHead") end,
+						hidden = function() return not LDBIcon or not LDBIcon:IsRegistered("LoggerHead") end,
 					},
 				},
 			},
@@ -390,7 +398,5 @@ function LoggerHead.GenerateOptionsInternal()
 	end
 
 	LoggerHead.options.args.output = LoggerHead:GetSinkAce3OptionsDataTable()
-	L["Output"] = LoggerHead.options.args.output.name
 	LoggerHead.options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LoggerHead.db)
-	L["Profiles"] = LoggerHead.options.args.profiles.name
 end
