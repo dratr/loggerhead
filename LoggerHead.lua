@@ -73,8 +73,6 @@ function LoggerHead:OnInitialize()
 		db.version = 2
 	end
 
-	print(LDB, LDBIcon)
-
 	-- LDB launcher
 	if LDB then
 		LoggerHeadDS = LDB:NewDataObject("LoggerHead", {
