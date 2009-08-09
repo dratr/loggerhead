@@ -170,11 +170,12 @@ function LoggerHead:DisableLogging()
 	if LoggingCombat() then
 		self:Pour(COMBATLOGDISABLED)
 	end
-	LoggingCombat(0)
-
+	
 	if LoggingCombat() and IsAddOnLoaded("Transcriptor") and LoggerHead.db.profile.transcriptor then
 		Transcriptor:StopLog()
 	end	
+	
+	LoggingCombat(0)
 
 	if LoggerHead.db.profile.chat then
 		if LoggingChat() then
