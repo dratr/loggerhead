@@ -133,7 +133,7 @@ function LoggerHead:ZoneChangedNewArea()
 	--self:Print(zone,tostring(LoggerHead.db.profile.log[zone]));
 
 	--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
-	if LoggerHead.db.profile.log[zone] == nil and LoggerHead.db.profile.prompt == true then
+	if (LoggerHead.db.profile.log[zone] == nil or (LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][difficulty] == nil)) and LoggerHead.db.profile.prompt == true then
 		StaticPopup_Show("LoggerHeadLogConfirm", ((difficultyName or "").." "..zone))
 		return
 	end
