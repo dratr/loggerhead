@@ -366,7 +366,7 @@ function LoggerHead.GenerateOptionsInternal()
 
 		if (continent ~= UNKNOWN) then
 			local type = (T:IsArena(zone) or T:IsBattleground(zone) or zone == BZ["Wintergrasp"]) and "pvp" or (T:IsInstance(zone) and "instances") or "zones"
-			local heroic = ((T:GetLevel(zone) >= 70 and T:GetInstanceGroupSize(zone) == 5) and type == "instances") or (continent == BZ["Northrend"]  and type == "instances")
+			local heroic = ((T:GetLevel(zone) >= 70 and T:GetInstanceGroupSize(zone) == 5) and type == "instances") or (continent == BZ["Northrend"]  and type == "instances")  or (zone == BZ["Onyxia's Lair"])
 
 			if (options.args[type] and type == "pvp") then
 				options.args[type].args[zone] = {
