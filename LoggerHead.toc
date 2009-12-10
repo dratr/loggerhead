@@ -1,4 +1,4 @@
-﻿## Interface: 30200
+﻿## Interface: 30300
 ## Title: LoggerHead
 ## Notes: Automatically turns on the combat log for selected instances
 ## Notes-ruRU: Автоматически включает запись лога боя в выбранных подземельях
@@ -6,7 +6,7 @@
 ## X-eMail: rsmozang@gmail.com
 ## X-Category: Miscellaneous
 ## X-Embeds: Ace3, LibTourist-3.0, LibSink-2.0, LibBabble-Zone-3.0
-## Version: 3.2.0.@project-revision@
+## Version: 3.3.0.@project-revision@
 ## OptionalDeps: Ace3, LibTourist-3.0, LibBabble-Zone-3.0, LibSink-2.0
 ## SavedVariables: LoggerHeadDB
 ## LoadManagers: AddonLoader
