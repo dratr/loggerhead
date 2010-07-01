@@ -6,7 +6,7 @@
 ## X-eMail: rsmozang@gmail.com
 ## X-Category: Miscellaneous
 ## X-Embeds: Ace3, LibTourist-3.0, LibSink-2.0, LibBabble-Zone-3.0
-## Version: 3.3.0.@project-revision@
+## Version: 3.3.5.@project-revision@
 ## OptionalDeps: Ace3, LibTourist-3.0, LibBabble-Zone-3.0, LibSink-2.0
 ## SavedVariables: LoggerHeadDB
 ## LoadManagers: AddonLoader
