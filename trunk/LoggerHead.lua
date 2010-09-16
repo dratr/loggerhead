@@ -1,17 +1,29 @@
 local LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.0","AceEvent-3.0","AceTimer-3.0","LibSink-2.0")
 
 local L = LibStub("AceLocale-3.0"):GetLocale("LoggerHead", true)
-local T = LibStub("LibTourist-3.0")
-local BZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
 local LDB = LibStub("LibDataBroker-1.1", true)
 local LDBIcon = LDB and LibStub("LibDBIcon-1.0", true)
+
+local GetInstanceInfo = GetInstanceInfo
+
+local difficultyLookup = { 
+	DUNGEON_DIFFICULTY1, 
+	DUNGEON_DIFFICULTY2, 
+	RAID_DIFFICULTY_10PLAYER, 
+	RAID_DIFFICULTY_25PLAYER,
+	RAID_DIFFICULTY_10PLAYER_HEROIC,
+	RAID_DIFFICULTY_25PLAYER_HEROIC,
+	RAID_DIFFICULTY_20PLAYER,
+	RAID_DIFFICULTY_40PLAYER
+}
 
 local db
 local defaults = {
 	profile = {
 		log = {},
 		prompt = true,
-		default = false,
+		transcriptor = false,
+		chat = false,
 		sink = {},
 		minimap = {
 			hide = false,
@@ -31,47 +43,44 @@ function LoggerHead:OnInitialize()
 		hideOnEscape = 1,
 		timeout = 0,
 		OnAccept = function()
-			LoggerHead.db.profile.log[GetRealZoneText()] = {}
-			LoggerHead.db.profile.log[GetRealZoneText()][GetInstanceDifficulty()] = true
+			local zone, type, difficulty = self:GetInstanceInformation()
+			
+			if LoggerHead.db.profile.log[type] == nil  then
+				LoggerHead.db.profile.log[type] = {}
+			end
+				
+			if LoggerHead.db.profile.log[type][zone] == nil then
+				LoggerHead.db.profile.log[type][zone] = {}
+			end
+
+			LoggerHead.db.profile.log[type][zone][difficulty] = true
 			self:ZoneChangedNewArea()
 		end,
 		OnCancel = function()
-			LoggerHead.db.profile.log[GetRealZoneText()] = {}
-			LoggerHead.db.profile.log[GetRealZoneText()][GetInstanceDifficulty()] = false
+			local zone, type, difficulty = self:GetInstanceInformation()
+			
+			if LoggerHead.db.profile.log[type] == nil  then
+				LoggerHead.db.profile.log[type] = {}
+			end
+				
+			if LoggerHead.db.profile.log[type][zone] == nil then
+				LoggerHead.db.profile.log[type][zone] = {}
+			end
+
+			LoggerHead.db.profile.log[type][zone][difficulty] = false
 			self:ZoneChangedNewArea()
 		end
 	}
 
 	self.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
+
 	db = self.db.profile
 	self:SetSinkStorage(self.db.profile.sink)
-
-	if not db.version then
-
-		for k,v in pairs(db.log) do
-			local zone = k:gsub("_", " ")
-			local continent = (T:GetContinent(zone)):gsub(" ","")
-			local type = T:IsInstance(zone) and "instances" or "zones"
-
-			db.log[k] = {}
-			if ((T:GetLevel(zone) >= 70 and T:GetInstanceGroupSize(zone) == 5) and type == "instances") or (continent == BZ["Northrend"]  and type == "instances") then
-				db.log[k][1] = v
-				db.log[k][2] = v
-			else
-				db.log[k][1] = v
-			end
-		end
-
-		if not db.minimap then
-			db.minimap = {
-				hide = false,
-				minimapPos = 250,
-				radius = 80,
-			}
-		end
-
-		db.version = 2
-	end
+	
+	if not db.version or db.version < 3 then
+		db.log = {}
+		db.version = 3
+	end	
 
 	-- LDB launcher
 	if LDB then
@@ -86,6 +95,7 @@ function LoggerHead:OnInitialize()
 				end
 		
 				if button == "LeftButton" then
+					print('here',LoggingCombat())
 					if LoggingCombat() then
 						LoggerHead:DisableLogging()
 					else
@@ -108,40 +118,54 @@ function LoggerHead:OnInitialize()
 
 	self:SetupOptions()
 	
-	self:RegisterChatCommand("lh", LoggerHead.ShowConfig )
+	self:RegisterChatCommand("loggerhead", LoggerHead.ShowConfig )
 end
 
 
 function LoggerHead:OnEnable()
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","ZoneChangedNewArea")
+	self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","ZoneChangedNewArea")
+	self:RegisterEvent("UPDATE_INSTANCE_INFO","ZoneChangedNewArea")
 
 	self:ZoneChangedNewArea()
 end
 
 function LoggerHead:ZoneChangedNewArea()
-	local zone = GetRealZoneText()
+	local zone, type, difficulty, difficultyName = self:GetInstanceInformation()
 
-	if zone == nil or zone == "" then
+	if not zone then
 		-- zone hasn't been loaded yet, try again in 5 secs.
 		self:ScheduleTimer(self.ZoneChangedNewArea,5,self)
 		--self:Print("Unable to determine zone - retrying in 5 secs")
 		return
 	end
 
-	local _,type,difficulty,difficultyName = GetInstanceInfo()
+	--self:Print(type,zone,difficulty,difficultyName)
+	
+	if type ~= "none" then
+		if LoggerHead.db.profile.log[type] == nil  then
+			LoggerHead.db.profile.log[type] = {}
+		end
+			
+		if LoggerHead.db.profile.log[type][zone] == nil then
+			LoggerHead.db.profile.log[type][zone] = {}
+		end
 
-	--self:Print(zone,tostring(LoggerHead.db.profile.log[zone]));
+		--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
+		if LoggerHead.db.profile.log[type][zone][difficulty] == nil then
+			if  LoggerHead.db.profile.prompt == true then
+				StaticPopup_Show("LoggerHeadLogConfirm", ((difficultyName or "").." "..zone))
+				return  -- need to return and then callback to wait for user input 
+			else
+				LoggerHead.db.profile.log[type][zone][difficulty] = false
+			end
+		end
 
-	--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
-	if (LoggerHead.db.profile.log[zone] == nil or (LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][difficulty] == nil)) and LoggerHead.db.profile.prompt == true then
-		StaticPopup_Show("LoggerHeadLogConfirm", ((difficultyName or "").." "..zone))
-		return
-	end
-
-	if LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][difficulty] then
-		self:EnableLogging()
-	else
-		self:DisableLogging()
+		if LoggerHead.db.profile.log[type][zone][difficulty] then
+			self:EnableLogging()
+		else
+			self:DisableLogging()
+		end
 	end
 end
 
@@ -167,14 +191,15 @@ function LoggerHead:EnableLogging()
 end
 
 function LoggerHead:DisableLogging()
+
 	if LoggingCombat() then
 		self:Pour(COMBATLOGDISABLED)
 	end
-	
+
 	if LoggingCombat() and IsAddOnLoaded("Transcriptor") and LoggerHead.db.profile.transcriptor then
 		Transcriptor:StopLog()
 	end	
-	
+
 	LoggingCombat(0)
 
 	if LoggerHead.db.profile.chat then
@@ -183,7 +208,6 @@ function LoggerHead:DisableLogging()
 		end
 		LoggingChat(0)
 	end
-	
 
 	LoggerHeadDS.icon = "Interface\\AddOns\\LoggerHead\\disabled"
 	LoggerHeadDS.text = "|cffff0000"..L["Disabled"].."|r"
@@ -200,29 +224,23 @@ function LoggerHead:SetupOptions()
 	local ACD3 = LibStub("AceConfigDialog-3.0")
 	LoggerHead.optionsFrames = {}
 	LoggerHead.optionsFrames.LoggerHead = ACD3:AddToBlizOptions("LoggerHead", "LoggerHead",nil, "general")
-	LoggerHead.optionsFrames.Instances	= ACD3:AddToBlizOptions("LoggerHead", L["Instances"], "LoggerHead","instances")
-	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions("LoggerHead", L["Zones"], "LoggerHead","zones")
-	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions("LoggerHead", PVP, "LoggerHead","pvp")
-	LoggerHead.optionsFrames.Unknown	= ACD3:AddToBlizOptions("LoggerHead", L["Unclassified"], "LoggerHead","unknown")
+	LoggerHead.optionsFrames.Instances	= ACD3:AddToBlizOptions("LoggerHead", ARENA, "LoggerHead",string.lower(ARENA))
+	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions("LoggerHead", PARTY, "LoggerHead",string.lower(PARTY))
+	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions("LoggerHead", PVP, "LoggerHead",string.lower(PVP))
+	LoggerHead.optionsFrames.Unknown	= ACD3:AddToBlizOptions("LoggerHead", RAID, "LoggerHead",string.lower(RAID))
 	LoggerHead.optionsFrames.Output		= ACD3:AddToBlizOptions("LoggerHead", L["Output"], "LoggerHead","output")
 	LoggerHead.optionsFrames.Profiles	= ACD3:AddToBlizOptions("LoggerHead", L["Profiles"], "LoggerHead","profiles")
 end
 
 function LoggerHead.GenerateOptions()
 	if LoggerHead.noconfig then assert(false, LoggerHead.noconfig) end
-	if not LoggerHead.options then
-		LoggerHead.GenerateOptionsInternal()
-		LoggerHead.GenerateOptionsInternal = nil
-	end
+
+	LoggerHead.GenerateOptionsInternal()
+
 	return LoggerHead.options
 end
 
 function LoggerHead.GenerateOptionsInternal()
-	local Kalimdor, Eastern_Kingdoms, Outland, Northrend = GetMapContinents()
-
---	LoggerHead:Print(Kalimdor, Eastern_Kingdoms, Outland, Northrend)
-
-	Kalimdor, Eastern_Kingdoms, Outland, Northrend = Kalimdor:gsub(" ",""), Eastern_Kingdoms:gsub(" ",""), Outland:gsub(" ",""), Northrend:gsub(" ","")
 
 --    * arena - A PvP Arena instance
 --    * none - Normal world area (e.g. Northrend, Kalimdor, Deeprun Tram)
@@ -280,164 +298,86 @@ function LoggerHead.GenerateOptionsInternal()
 					},
 				},
 			},
-			instances = {
+			[string.lower(ARENA)] = {
 				order = 1,
 				type = "group",
-				name = L["Instances"],
+				name = ARENA,
 				desc = SETTINGS,
-				args = {
-					[BZ["Eastern Kingdoms"]] = {
-						type = "group",
-						name = BZ["Eastern Kingdoms"],
-						desc = SETTINGS,
-						args = {},
-					},
-					[BZ["Kalimdor"]] = {
-						type = "group",
-						name = BZ["Kalimdor"],
-						desc = SETTINGS,
-						args = {},
-					},
-					[BZ["Outland"]] = {
-						type = "group",
-						name = BZ["Outland"],
-						desc = SETTINGS,
-						args = {},
-					},
-					[BZ["Northrend"]] = {
-						type = "group",
-						name = BZ["Northrend"],
-						desc = SETTINGS,
-						args = {},
-					},
-				},
+				args = {},
 			},
-			zones = {
+			[string.lower(PARTY)] = {
 				order = 2,
 				type = "group",
-				name = L["Zones"],
+				name = PARTY,
 				desc = SETTINGS,
-				args = {
-					[BZ["Eastern Kingdoms"]] = {
-						type = "group",
-						name = BZ["Eastern Kingdoms"],
-						desc = SETTINGS,
-						args = {},
-					},
-					[BZ["Kalimdor"]] = {
-						type = "group",
-						name = BZ["Kalimdor"],
-						desc = SETTINGS,
-						args = {},
-					},
-					[BZ["Outland"]] = {
-						type = "group",
-						name = BZ["Outland"],
-						desc = SETTINGS,
-						args = {},
-					},
-					[BZ["Northrend"]] = {
-						type = "group",
-						name = BZ["Northrend"],
-						desc = SETTINGS,
-						args = {},
-					},
-				},
+				args = {},
 			},
-			pvp = {
+			[string.lower(PVP)] = {
 				order = 3,
 				type = "group",
 				name = PVP,
 				desc = SETTINGS,
 				args = {},
 			},
-			unknown = {
+			[string.lower(RAID)] = {
 				order = 4,
 				type = "group",
-				name = UNKNOWN,
+				name = RAID,
 				desc = SETTINGS,
 				args = {},
 			},
 		},
 	}
+	
+	local function buildmenu(options,type,zone,difficulties)
+		local d = {}
+		
+		--build our difficulty option table
+		for difficulty,_ in pairs(difficulties) do
+			--print(type,zone,difficulty,difficultyLookup[difficulty])
+			d[tonumber(difficulty)] = difficultyLookup[difficulty]
+		end
 
-	local function buildmenu(options,zone)
-		local continent = (T:GetContinent(zone))--:gsub(" ","")
+		options.args[type].args[zone] = {
+			type = "multiselect",
+			name = zone,
+			desc = BINDING_NAME_TOGGLECOMBATLOG,
+			values = function() return d end,
+			get = function(info,key) return (LoggerHead.db.profile.log[type][zone][key]) or nil end,
+			set = function(info,key, value) LoggerHead.db.profile.log[type][zone][key] = value end,
+		}
+	end
 
-		if (continent ~= UNKNOWN) then
-			local type = (T:IsArena(zone) or T:IsBattleground(zone) or zone == BZ["Wintergrasp"]) and "pvp" or (T:IsInstance(zone) and "instances") or "zones"
-			local heroic = ((T:GetLevel(zone) >= 70 and T:GetInstanceGroupSize(zone) == 5) and type == "instances") or (continent == BZ["Northrend"]  and type == "instances")  or (zone == BZ["Onyxia's Lair"])
-
-			if (options.args[type] and type == "pvp") then
-				options.args[type].args[zone] = {
-					type = "multiselect",
-					name = zone,
-					desc = BINDING_NAME_TOGGLECOMBATLOG,
-					values = function() return {[0x1] = DUNGEON_DIFFICULTY1} end,
-					get = function(info,key) return (LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][key]) or nil end,
-					set = function(info,key, value) if not LoggerHead.db.profile.log[zone] then LoggerHead.db.profile.log[zone] = {} end  LoggerHead.db.profile.log[zone][key] = value end,
-				}
-			elseif (options.args[type] and options.args[type].args[continent]) then
-				if heroic then
-					if zone == BZ["Trial of the Crusader"] then
-						options.args[type].args[continent].args[zone] = {
-							type = "multiselect",
-							name = zone,
-							desc = BINDING_NAME_TOGGLECOMBATLOG,
-							values = function() return {[0x1] = RAID_DIFFICULTY1, [0x2] = RAID_DIFFICULTY2,[0x3] = RAID_DIFFICULTY3, [0x4] = RAID_DIFFICULTY4} end,
-							get = function(info,key) return (LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][key]) or nil end,
-							set = function(info,key, value) if not LoggerHead.db.profile.log[zone] then LoggerHead.db.profile.log[zone] = {} end LoggerHead.db.profile.log[zone][key] = value end,
-						}
-					elseif T:GetInstanceGroupSize(zone) > 5 then
-						options.args[type].args[continent].args[zone] = {
-							type = "multiselect",
-							name = zone,
-							desc = BINDING_NAME_TOGGLECOMBATLOG,
-							values = function() return {[0x1] = RAID_DIFFICULTY1, [0x2] = RAID_DIFFICULTY2} end,
-							get = function(info,key) return (LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][key]) or nil end,
-							set = function(info,key, value) if not LoggerHead.db.profile.log[zone] then LoggerHead.db.profile.log[zone] = {} end LoggerHead.db.profile.log[zone][key] = value end,
-						}
-					else
-						options.args[type].args[continent].args[zone] = {
-							type = "multiselect",
-							name = zone,
-							desc = BINDING_NAME_TOGGLECOMBATLOG,
-							values = function() return {[0x1] = DUNGEON_DIFFICULTY1, [0x2] = DUNGEON_DIFFICULTY2} end,
-							get = function(info,key) return (LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][key]) or nil end,
-							set = function(info,key, value) if not LoggerHead.db.profile.log[zone] then LoggerHead.db.profile.log[zone] = {} end LoggerHead.db.profile.log[zone][key] = value end,
-						}
-					end
-				else
-					options.args[type].args[continent].args[zone] = {
-						type = "multiselect",
-						name = zone,
-						desc = BINDING_NAME_TOGGLECOMBATLOG,
-						values = function() return {[0x1] = DUNGEON_DIFFICULTY1} end,
-						get = function(info,key) return (LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][key]) or nil end,
-						set = function(info,key, value) if not LoggerHead.db.profile.log[zone] then LoggerHead.db.profile.log[zone] = {} end  LoggerHead.db.profile.log[zone][key] = value end,
-					}
-				end
-			end
-		else
-			options.args.unknown.args[zone] = {
-				type = "multiselect",
-				name = zone,
-				desc = BINDING_NAME_TOGGLECOMBATLOG,
-				values = function() return {[0x1] = DUNGEON_DIFFICULTY1, [0x2] = DUNGEON_DIFFICULTY2} end,
-				get = function(info,key) return (LoggerHead.db.profile.log[zone] and LoggerHead.db.profile.log[zone][key]) or nil end,
-				set = function(info,key, value) LoggerHead.db.profile.log[zone][key] = value end,
-			}
+	for type,v in pairs(db.log) do
+		for zone,v2 in pairs(v) do
+			buildmenu(LoggerHead.options,type,zone,v2)
 		end
 	end
-
-	for zone,value in pairs(db.log) do
-		buildmenu(LoggerHead.options,zone)
-	end
-
-	for zone in T:IterateZonesAndInstances() do
-		buildmenu(LoggerHead.options,zone)
-	end
+	
+	collectgarbage("collect")
 
 	LoggerHead.options.args.output = LoggerHead:GetSinkAce3OptionsDataTable()
 	LoggerHead.options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LoggerHead.db)
 end
+
+function LoggerHead:GetInstanceInformation()
+	local zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo()
+	local difficulty = 0
+	
+	--print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
+		
+	if isDynamic then
+		difficulty = (maxPlayers == 25 and 4 or 3) + (dynamicDifficulty * 2)
+	elseif maxPlayers == 5 then
+		difficulty = difficultyIndex
+	elseif maxPlayers == 20 then
+		difficulty = 7
+	elseif maxPlayers == 40 then
+		difficulty = 8		
+	elseif maxPlayers >= 10 then
+		difficulty = difficultyIndex + 2
+	end
+
+	return zone, type, difficulty, difficultyLookup[difficulty]
+end
+
