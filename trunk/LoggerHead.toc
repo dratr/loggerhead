@@ -1,5 +1,4 @@
-﻿## Interface: 30300
-## X-Compatible-With: 40000
+﻿## Interface: 40000
 ## Title: LoggerHead
 ## Notes: Automatically turns on the combat log for selected instances
 ## Notes-ruRU: Автоматически включает запись лога боя в выбранных подземельях
