@@ -326,9 +326,11 @@ function LoggerHead.GenerateOptionsInternal()
 				desc = SETTINGS,
 				args = {},
 			},
+			output = LoggerHead:GetSinkAce3OptionsDataTable()
+			profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LoggerHead.db)
 		},
 	}
-	
+
 	local function buildmenu(options,type,zone,difficulties)
 		local d = {}
 		
@@ -355,9 +357,6 @@ function LoggerHead.GenerateOptionsInternal()
 	end
 	
 	collectgarbage("collect")
-
-	LoggerHead.options.args.output = LoggerHead:GetSinkAce3OptionsDataTable()
-	LoggerHead.options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LoggerHead.db)
 end
 
 function LoggerHead:GetInstanceInformation()
