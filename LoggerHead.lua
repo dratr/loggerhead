@@ -118,7 +118,7 @@ function LoggerHead:OnInitialize()
 
 	self:SetupOptions()
 	
-	self:RegisterChatCommand("loggerhead", LoggerHead.ShowConfig )
+	self:RegisterChatCommand("loggerhead", function() LoggerHead:ShowConfig() end)
 end
 
 
@@ -214,8 +214,8 @@ function LoggerHead:DisableLogging()
 end
 
 function LoggerHead:ShowConfig()
-	InterfaceOptionsFrame_OpenToCategory(self.optionsFrames.Profiles)
-	InterfaceOptionsFrame_OpenToCategory(self.optionsFrames.LoggerHead)
+	InterfaceOptionsFrame_OpenToCategory(LoggerHead.optionsFrames.Profiles)
+	InterfaceOptionsFrame_OpenToCategory(LoggerHead.optionsFrames.LoggerHead)
 end
 
 function LoggerHead:SetupOptions()
