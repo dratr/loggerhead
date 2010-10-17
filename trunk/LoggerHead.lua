@@ -1,15 +1,36 @@
+-- Global declarations for the findglobals script
+-- http://www.wowace.com/addons/findglobals/
+
+local mod = {}
+local modName = "LoggerHead"
+_G[modName] = mod
+
+-- GLOBALS: LibStub, Transcriptor
+-- GLOBALS: StaticPopupDialogs, StaticPopup_Show, InterfaceOptionsFrame_OpenToCategory, collectgarbage, assert
+-- GLOBALS: ENABLE, DISABLE, COMBAT_LOG, COMBATLOGDISABLED, CHATLOGDISABLED, COMBATLOGENABLED, CHATLOGENABLED
+-- GLOBALS: ARENA, PARTY, PVP, RAID, SETTINGS, BINDING_NAME_TOGGLECOMBATLOG
+
 local LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.0","AceEvent-3.0","AceTimer-3.0","LibSink-2.0")
 
 local L = LibStub("AceLocale-3.0"):GetLocale("LoggerHead", true)
 local LDB = LibStub("LibDataBroker-1.1", true)
 local LDBIcon = LDB and LibStub("LibDBIcon-1.0", true)
+local LoggerHeadDS = nil
 
-local GetInstanceInfo = GetInstanceInfo
+-- Localize a few functions
+
+local LoggingCombat = _G.LoggingCombat
+local LoggingChat = _G.LoggingChat
+local IsAddOnLoaded = _G.IsAddOnLoaded
+local GetInstanceInfo = _G.GetInstanceInfo
+local pairs = _G.pairs
+local tonumber = _G.tonumber
+local string = _G.string
 
 local difficultyLookup = { 
-	DUNGEON_DIFFICULTY1, 
-	DUNGEON_DIFFICULTY2, 
-	RAID_DIFFICULTY_10PLAYER, 
+	DUNGEON_DIFFICULTY1,
+	DUNGEON_DIFFICULTY2,
+	RAID_DIFFICULTY_10PLAYER,
 	RAID_DIFFICULTY_25PLAYER,
 	RAID_DIFFICULTY_10PLAYER_HEROIC,
 	RAID_DIFFICULTY_25PLAYER_HEROIC,
@@ -95,7 +116,6 @@ function LoggerHead:OnInitialize()
 				end
 		
 				if button == "LeftButton" then
-					print('here',LoggingCombat())
 					if LoggingCombat() then
 						LoggerHead:DisableLogging()
 					else
@@ -194,10 +214,9 @@ function LoggerHead:DisableLogging()
 
 	if LoggingCombat() then
 		self:Pour(COMBATLOGDISABLED)
-	end
-
-	if LoggingCombat() and IsAddOnLoaded("Transcriptor") and LoggerHead.db.profile.transcriptor then
-		Transcriptor:StopLog()
+        if IsAddOnLoaded("Transcriptor") and LoggerHead.db.profile.transcriptor then
+		  Transcriptor:StopLog()
+        end
 	end	
 
 	LoggingCombat(0)
@@ -218,16 +237,24 @@ function LoggerHead:ShowConfig()
 	InterfaceOptionsFrame_OpenToCategory(LoggerHead.optionsFrames.LoggerHead)
 end
 
+local origInterfaceOptionsFrame_OnHide = InterfaceOptionsFrame_OnHide
+InterfaceOptionsFrame_OnHide = function(...)
+	LoggerHead.options = {}
+	collectgarbage("collect")
+	return origInterfaceOptionsFrame_OnHide(...)
+end
+
+
 function LoggerHead:SetupOptions()
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("LoggerHead", self.GenerateOptions)
 
 	local ACD3 = LibStub("AceConfigDialog-3.0")
 	LoggerHead.optionsFrames = {}
 	LoggerHead.optionsFrames.LoggerHead = ACD3:AddToBlizOptions("LoggerHead", "LoggerHead",nil, "general")
-	LoggerHead.optionsFrames.Instances	= ACD3:AddToBlizOptions("LoggerHead", ARENA, "LoggerHead",string.lower(ARENA))
-	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions("LoggerHead", PARTY, "LoggerHead",string.lower(PARTY))
-	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions("LoggerHead", PVP, "LoggerHead",string.lower(PVP))
-	LoggerHead.optionsFrames.Unknown	= ACD3:AddToBlizOptions("LoggerHead", RAID, "LoggerHead",string.lower(RAID))
+	LoggerHead.optionsFrames.Instances	= ACD3:AddToBlizOptions("LoggerHead", ARENA, "LoggerHead","arean")
+	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions("LoggerHead", PARTY, "LoggerHead","party")
+	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions("LoggerHead", PVP, "LoggerHead","pvp")
+	LoggerHead.optionsFrames.Unknown	= ACD3:AddToBlizOptions("LoggerHead", RAID, "LoggerHead","raid")
 	LoggerHead.optionsFrames.Output		= ACD3:AddToBlizOptions("LoggerHead", L["Output"], "LoggerHead","output")
 	LoggerHead.optionsFrames.Profiles	= ACD3:AddToBlizOptions("LoggerHead", L["Profiles"], "LoggerHead","profiles")
 end
@@ -298,28 +325,28 @@ function LoggerHead.GenerateOptionsInternal()
 					},
 				},
 			},
-			[string.lower(ARENA)] = {
+			arena = {
 				order = 1,
 				type = "group",
 				name = ARENA,
 				desc = SETTINGS,
 				args = {},
 			},
-			[string.lower(PARTY)] = {
+			party = {
 				order = 2,
 				type = "group",
 				name = PARTY,
 				desc = SETTINGS,
 				args = {},
 			},
-			[string.lower(PVP)] = {
+			pvp = {
 				order = 3,
 				type = "group",
 				name = PVP,
 				desc = SETTINGS,
 				args = {},
 			},
-			[string.lower(RAID)] = {
+			raid = {
 				order = 4,
 				type = "group",
 				name = RAID,
@@ -355,8 +382,6 @@ function LoggerHead.GenerateOptionsInternal()
 			buildmenu(LoggerHead.options,type,zone,v2)
 		end
 	end
-	
-	collectgarbage("collect")
 end
 
 function LoggerHead:GetInstanceInformation()
@@ -372,7 +397,7 @@ function LoggerHead:GetInstanceInformation()
 	elseif maxPlayers == 20 then
 		difficulty = 7
 	elseif maxPlayers == 40 then
-		difficulty = 8		
+		difficulty = 8
 	elseif maxPlayers >= 10 then
 		difficulty = difficultyIndex + 2
 	end
