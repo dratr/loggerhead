@@ -143,14 +143,14 @@ end
 
 
 function LoggerHead:OnEnable()
-	self:RegisterEvent("ZONE_CHANGED_NEW_AREA","ZoneChangedNewArea")
+	--self:RegisterEvent("ZONE_CHANGED_NEW_AREA","ZoneChangedNewArea")
 	self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","ZoneChangedNewArea")
 	self:RegisterEvent("UPDATE_INSTANCE_INFO","ZoneChangedNewArea")
-
+	
 	self:ZoneChangedNewArea()
 end
 
-function LoggerHead:ZoneChangedNewArea()
+function LoggerHead:ZoneChangedNewArea(event)
 	local zone, type, difficulty, difficultyName = self:GetInstanceInformation()
 
 	if not zone then
@@ -160,7 +160,7 @@ function LoggerHead:ZoneChangedNewArea()
 		return
 	end
 
-	--self:Print(type,zone,difficulty,difficultyName)
+	--self:Print(event,type,zone,difficulty,difficultyName)
 	
 	if type ~= "none" then
 		if LoggerHead.db.profile.log[type] == nil  then
@@ -183,10 +183,10 @@ function LoggerHead:ZoneChangedNewArea()
 
 		if LoggerHead.db.profile.log[type][zone][difficulty] then
 			self:EnableLogging()
-		else
-			self:DisableLogging()
+			return
 		end
 	end
+	self:DisableLogging()
 end
 
 function LoggerHead:EnableLogging()
@@ -218,7 +218,6 @@ function LoggerHead:DisableLogging()
 		  Transcriptor:StopLog()
         end
 	end	
-
 	LoggingCombat(0)
 
 	if LoggerHead.db.profile.chat then
