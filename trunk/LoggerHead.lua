@@ -378,7 +378,9 @@ function LoggerHead.GenerateOptionsInternal()
 
 	for type,v in pairs(db.log) do
 		for zone,v2 in pairs(v) do
-			buildmenu(LoggerHead.options,type,zone,v2)
+			if type ~= "none" then
+				buildmenu(LoggerHead.options,type,zone,v2)
+			end
 		end
 	end
 end
