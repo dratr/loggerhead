@@ -27,7 +27,7 @@ local pairs = _G.pairs
 local tonumber = _G.tonumber
 local string = _G.string
 
-local difficultyLookup = { 
+local difficultyLookup = {
 	DUNGEON_DIFFICULTY1,
 	DUNGEON_DIFFICULTY2,
 	RAID_DIFFICULTY_10PLAYER,
@@ -65,11 +65,11 @@ function LoggerHead:OnInitialize()
 		timeout = 0,
 		OnAccept = function()
 			local zone, type, difficulty = self:GetInstanceInformation()
-			
+
 			if LoggerHead.db.profile.log[type] == nil  then
 				LoggerHead.db.profile.log[type] = {}
 			end
-				
+
 			if LoggerHead.db.profile.log[type][zone] == nil then
 				LoggerHead.db.profile.log[type][zone] = {}
 			end
@@ -79,11 +79,11 @@ function LoggerHead:OnInitialize()
 		end,
 		OnCancel = function()
 			local zone, type, difficulty = self:GetInstanceInformation()
-			
+
 			if LoggerHead.db.profile.log[type] == nil  then
 				LoggerHead.db.profile.log[type] = {}
 			end
-				
+
 			if LoggerHead.db.profile.log[type][zone] == nil then
 				LoggerHead.db.profile.log[type][zone] = {}
 			end
@@ -97,11 +97,11 @@ function LoggerHead:OnInitialize()
 
 	db = self.db.profile
 	self:SetSinkStorage(self.db.profile.sink)
-	
+
 	if not db.version or db.version < 3 then
 		db.log = {}
 		db.version = 3
-	end	
+	end
 
 	-- LDB launcher
 	if LDB then
@@ -114,7 +114,7 @@ function LoggerHead:OnInitialize()
 				if button == "RightButton" then
 					LoggerHead:ShowConfig()
 				end
-		
+
 				if button == "LeftButton" then
 					if LoggingCombat() then
 						LoggerHead:DisableLogging()
@@ -137,7 +137,7 @@ function LoggerHead:OnInitialize()
 	end
 
 	self:SetupOptions()
-	
+
 	self:RegisterChatCommand("loggerhead", function() LoggerHead:ShowConfig() end)
 end
 
@@ -146,7 +146,7 @@ function LoggerHead:OnEnable()
 	--self:RegisterEvent("ZONE_CHANGED_NEW_AREA","ZoneChangedNewArea")
 	self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","ZoneChangedNewArea")
 	self:RegisterEvent("UPDATE_INSTANCE_INFO","ZoneChangedNewArea")
-	
+
 	self:ZoneChangedNewArea()
 end
 
@@ -161,12 +161,12 @@ function LoggerHead:ZoneChangedNewArea(event)
 	end
 
 	--self:Print(event,type,zone,difficulty,difficultyName)
-	
+
 	if type ~= "none" then
 		if LoggerHead.db.profile.log[type] == nil  then
 			LoggerHead.db.profile.log[type] = {}
 		end
-			
+
 		if LoggerHead.db.profile.log[type][zone] == nil then
 			LoggerHead.db.profile.log[type][zone] = {}
 		end
@@ -175,7 +175,7 @@ function LoggerHead:ZoneChangedNewArea(event)
 		if LoggerHead.db.profile.log[type][zone][difficulty] == nil then
 			if  LoggerHead.db.profile.prompt == true then
 				StaticPopup_Show("LoggerHeadLogConfirm", ((difficultyName or "").." "..zone))
-				return  -- need to return and then callback to wait for user input 
+				return  -- need to return and then callback to wait for user input
 			else
 				LoggerHead.db.profile.log[type][zone][difficulty] = false
 			end
@@ -196,7 +196,7 @@ function LoggerHead:EnableLogging()
 	LoggingCombat(1)
 
 	if IsAddOnLoaded("Transcriptor") and LoggerHead.db.profile.transcriptor then
-		Transcriptor:StartLog()
+		Transcriptor:StartLog(true)
 	end
 
 	if LoggerHead.db.profile.chat then
@@ -215,9 +215,9 @@ function LoggerHead:DisableLogging()
 	if LoggingCombat() then
 		self:Pour(COMBATLOGDISABLED)
         if IsAddOnLoaded("Transcriptor") and LoggerHead.db.profile.transcriptor then
-		  Transcriptor:StopLog()
+		  Transcriptor:StopLog(true)
         end
-	end	
+	end
 	LoggingCombat(0)
 
 	if LoggerHead.db.profile.chat then
@@ -359,7 +359,7 @@ function LoggerHead.GenerateOptionsInternal()
 
 	local function buildmenu(options,type,zone,difficulties)
 		local d = {}
-		
+
 		--build our difficulty option table
 		for difficulty,_ in pairs(difficulties) do
 			--print(type,zone,difficulty,difficultyLookup[difficulty])
@@ -386,9 +386,9 @@ end
 function LoggerHead:GetInstanceInformation()
 	local zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo()
 	local difficulty = 0
-	
+
 	--print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
-		
+
 	if isDynamic then
 		difficulty = (maxPlayers == 25 and 4 or 3) + (dynamicDifficulty * 2)
 	elseif maxPlayers == 5 then
