@@ -159,6 +159,13 @@ function LoggerHead:ZoneChangedNewArea(event)
 		--self:Print("Unable to determine zone - retrying in 5 secs")
 		return
 	end
+	if zone == self.lastzone and difficulty == self.lastdiff then
+	  -- do nothing if the zone hasn't ACTUALLY changed
+	  -- otherwise we may override the user's manual enable/disable
+	  return
+	end
+        self.lastzone = zone
+	self.lastdiff = difficulty
 
 	--self:Print(event,type,zone,difficulty,difficultyName)
 
@@ -175,6 +182,7 @@ function LoggerHead:ZoneChangedNewArea(event)
 		if LoggerHead.db.profile.log[type][zone][difficulty] == nil then
 			if  LoggerHead.db.profile.prompt == true then
 				StaticPopup_Show("LoggerHeadLogConfirm", ((difficultyName or "").." "..zone))
+				self.lastzone = nil
 				return  -- need to return and then callback to wait for user input
 			else
 				LoggerHead.db.profile.log[type][zone][difficulty] = false
