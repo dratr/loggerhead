@@ -34,7 +34,8 @@ local difficultyLookup = {
 	RAID_DIFFICULTY_25PLAYER,
 	RAID_DIFFICULTY_10PLAYER_HEROIC,
 	RAID_DIFFICULTY_25PLAYER_HEROIC,
-	RAID_DIFFICULTY_20PLAYER,
+	RAID_DIFFICULTY_RAIDFINDER,
+    CHALLENGE_MODE,
 	RAID_DIFFICULTY_40PLAYER
 }
 
@@ -67,7 +68,7 @@ function LoggerHead:OnInitialize()
 			local zone, type, difficulty = self:GetInstanceInformation()
 
 			if LoggerHead.db.profile.log[type] == nil  then
-				LoggerHead.db.profile.log[type] = {}
+				LoggerHead.db.profile.log[type] = "scenario"
 			end
 
 			if LoggerHead.db.profile.log[type][zone] == nil then
@@ -81,7 +82,7 @@ function LoggerHead:OnInitialize()
 			local zone, type, difficulty = self:GetInstanceInformation()
 
 			if LoggerHead.db.profile.log[type] == nil  then
-				LoggerHead.db.profile.log[type] = {}
+				LoggerHead.db.profile.log[type] = "scenario"
 			end
 
 			if LoggerHead.db.profile.log[type][zone] == nil then
@@ -143,7 +144,7 @@ end
 
 
 function LoggerHead:OnEnable()
-	--self:RegisterEvent("ZONE_CHANGED_NEW_AREA","ZoneChangedNewArea")
+	-- self:RegisterEvent("ZONE_CHANGED_NEW_AREA","ZoneChangedNewArea")
 	self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","ZoneChangedNewArea")
 	self:RegisterEvent("UPDATE_INSTANCE_INFO","ZoneChangedNewArea")
 
@@ -156,7 +157,7 @@ function LoggerHead:ZoneChangedNewArea(event)
 	if not zone then
 		-- zone hasn't been loaded yet, try again in 5 secs.
 		self:ScheduleTimer(self.ZoneChangedNewArea,5,self)
-		--self:Print("Unable to determine zone - retrying in 5 secs")
+		-- self:Print("Unable to determine zone - retrying in 5 secs")
 		return
 	end
 	if zone == self.lastzone and difficulty == self.lastdiff then
@@ -167,7 +168,7 @@ function LoggerHead:ZoneChangedNewArea(event)
         self.lastzone = zone
 	self.lastdiff = difficulty
 
-	--self:Print(event,type,zone,difficulty,difficultyName)
+	self:Print(event,type,zone,difficulty,difficultyName)
 
 	if type ~= "none" then
 		if LoggerHead.db.profile.log[type] == nil  then
@@ -262,6 +263,7 @@ function LoggerHead:SetupOptions()
 	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions("LoggerHead", PARTY, "LoggerHead","party")
 	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions("LoggerHead", PVP, "LoggerHead","pvp")
 	LoggerHead.optionsFrames.Unknown	= ACD3:AddToBlizOptions("LoggerHead", RAID, "LoggerHead","raid")
+    LoggerHead.optionsFrames.Scenario	= ACD3:AddToBlizOptions("LoggerHead", SCENARIOS, "LoggerHead","scenario")
 	LoggerHead.optionsFrames.Output		= ACD3:AddToBlizOptions("LoggerHead", L["Output"], "LoggerHead","output")
 	LoggerHead.optionsFrames.Profiles	= ACD3:AddToBlizOptions("LoggerHead", L["Profiles"], "LoggerHead","profiles")
 end
@@ -360,6 +362,13 @@ function LoggerHead.GenerateOptionsInternal()
 				desc = SETTINGS,
 				args = {},
 			},
+			scenario = {
+				order = 5,
+				type = "group",
+				name = SCENARIOS,
+				desc = SETTINGS,
+				args = {},
+			},
 			output = LoggerHead:GetSinkAce3OptionsDataTable(),
 			profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LoggerHead.db),
 		},
@@ -395,22 +404,13 @@ end
 
 function LoggerHead:GetInstanceInformation()
 	local zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo()
-	local difficulty = 0
-
-	--print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
-
-	if isDynamic then
-		difficulty = (maxPlayers == 25 and 4 or 3) + (dynamicDifficulty * 2)
-	elseif maxPlayers == 5 then
-		difficulty = difficultyIndex
-	elseif maxPlayers == 20 then
-		difficulty = 7
-	elseif maxPlayers == 40 then
-		difficulty = 8
-	elseif maxPlayers >= 10 then
-		difficulty = difficultyIndex + 2
-	end
-
+    local difficulty = difficultyIndex
+	-- print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
+    
+    if type == nil and difficultyIndex == 1 then
+        type = "scenario"
+    end
+    
 	return zone, type, difficulty, difficultyLookup[difficulty]
 end
 
