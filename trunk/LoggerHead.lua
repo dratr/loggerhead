@@ -157,7 +157,9 @@ function LoggerHead:ZoneChangedNewArea(event)
 	if not zone then
 		-- zone hasn't been loaded yet, try again in 5 secs.
 		self:ScheduleTimer(self.ZoneChangedNewArea,5,self)
-		-- self:Print("Unable to determine zone - retrying in 5 secs")
+        --@debug@
+		self:Print("Unable to determine zone - retrying in 5 secs")
+        --@end-debug@
 		return
 	end
 	if zone == self.lastzone and difficulty == self.lastdiff then
@@ -167,8 +169,10 @@ function LoggerHead:ZoneChangedNewArea(event)
 	end
         self.lastzone = zone
 	self.lastdiff = difficulty
-
+    
+    --@debug@
 	self:Print(event,type,zone,difficulty,difficultyName)
+    --@end-debug@
 
 	if type ~= "none" then
 		if LoggerHead.db.profile.log[type] == nil  then
@@ -379,7 +383,9 @@ function LoggerHead.GenerateOptionsInternal()
 
 		--build our difficulty option table
 		for difficulty,_ in pairs(difficulties) do
-			--print(type,zone,difficulty,difficultyLookup[difficulty])
+            --@debug@
+			print(type,zone,difficulty,difficultyLookup[difficulty])
+            --@end-debug@
 			d[tonumber(difficulty)] = difficultyLookup[difficulty]
 		end
 
@@ -405,8 +411,12 @@ end
 function LoggerHead:GetInstanceInformation()
 	local zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo()
     local difficulty = difficultyIndex
-	-- print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
     
+    --@debug@
+	print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
+    --@end-debug@
+    
+    -- Unless Blizzard fixes scenarios to not return nil, let's hardcode this into returning "scenario" -Znuff
     if type == nil and difficultyIndex == 1 then
         type = "scenario"
     end
