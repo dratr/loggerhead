@@ -6,7 +6,7 @@
 ## X-eMail: rsmozang@gmail.com
 ## X-Category: Miscellaneous
 ## X-Embeds: Ace3, LibSink-2.0, LibDBIcon-1.0
-## Version: 4.0.@project-revision@
+## Version: @project-revision@
 ## OptionalDeps: Ace3, LibSink-2.0, LibDBIcon-1.0
 ## SavedVariables: LoggerHeadDB
 ## LoadManagers: AddonLoader
