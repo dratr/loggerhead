@@ -55,45 +55,50 @@ local defaults = {
 	}
 }
 
+function LoggerHead:StaticPopup()
+	if not StaticPopupDialogs["LoggerHeadLogConfirm"]  then
+		StaticPopupDialogs["LoggerHeadLogConfirm"] = {
+			text = L["You have entered |cffd9d919%s|r. Enable logging for this area?"],
+			preferredIndex = 4,
+			button1 = ENABLE,
+			button2 = DISABLE,
+			sound = "levelup2",
+			whileDead = 0,
+			hideOnEscape = 1,
+			timeout = 0,
+			OnAccept = function()
+				local zone, type, difficulty = self:GetInstanceInformation()
+	
+				if LoggerHead.db.profile.log[type] == nil  then
+					LoggerHead.db.profile.log[type] = "scenario"
+				end
+	
+				if LoggerHead.db.profile.log[type][zone] == nil then
+					LoggerHead.db.profile.log[type][zone] = {}
+				end
+	
+				LoggerHead.db.profile.log[type][zone][difficulty] = true
+				self:ZoneChangedNewArea()
+			end,
+			OnCancel = function()
+				local zone, type, difficulty = self:GetInstanceInformation()
+	
+				if LoggerHead.db.profile.log[type] == nil  then
+					LoggerHead.db.profile.log[type] = "scenario"
+				end
+	
+				if LoggerHead.db.profile.log[type][zone] == nil then
+					LoggerHead.db.profile.log[type][zone] = {}
+				end
+	
+				LoggerHead.db.profile.log[type][zone][difficulty] = false
+				self:ZoneChangedNewArea()
+			end
+		}
+	end
+end
+
 function LoggerHead:OnInitialize()
-	StaticPopupDialogs["LoggerHeadLogConfirm"] = {
-		text = L["You have entered |cffd9d919%s|r. Enable logging for this area?"],
-		button1 = ENABLE,
-		button2 = DISABLE,
-		sound = "levelup2",
-		whileDead = 0,
-		hideOnEscape = 1,
-		timeout = 0,
-		OnAccept = function()
-			local zone, type, difficulty = self:GetInstanceInformation()
-
-			if LoggerHead.db.profile.log[type] == nil  then
-				LoggerHead.db.profile.log[type] = "scenario"
-			end
-
-			if LoggerHead.db.profile.log[type][zone] == nil then
-				LoggerHead.db.profile.log[type][zone] = {}
-			end
-
-			LoggerHead.db.profile.log[type][zone][difficulty] = true
-			self:ZoneChangedNewArea()
-		end,
-		OnCancel = function()
-			local zone, type, difficulty = self:GetInstanceInformation()
-
-			if LoggerHead.db.profile.log[type] == nil  then
-				LoggerHead.db.profile.log[type] = "scenario"
-			end
-
-			if LoggerHead.db.profile.log[type][zone] == nil then
-				LoggerHead.db.profile.log[type][zone] = {}
-			end
-
-			LoggerHead.db.profile.log[type][zone][difficulty] = false
-			self:ZoneChangedNewArea()
-		end
-	}
-
 	self.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
 
 	db = self.db.profile
@@ -154,7 +159,7 @@ end
 function LoggerHead:ZoneChangedNewArea(event)
 	local zone, type, difficulty, difficultyName = self:GetInstanceInformation()
 
-	if not zone then
+	if not zone and difficulty == 0 then
 		-- zone hasn't been loaded yet, try again in 5 secs.
 		self:ScheduleTimer(self.ZoneChangedNewArea,5,self)
         --@debug@
@@ -186,6 +191,7 @@ function LoggerHead:ZoneChangedNewArea(event)
 		--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
 		if LoggerHead.db.profile.log[type][zone][difficulty] == nil then
 			if  LoggerHead.db.profile.prompt == true then
+				self:StaticPopup()
 				StaticPopup_Show("LoggerHeadLogConfirm", ((difficultyName or "").." "..zone))
 				self.lastzone = nil
 				return  -- need to return and then callback to wait for user input
@@ -249,12 +255,15 @@ function LoggerHead:ShowConfig()
 	InterfaceOptionsFrame_OpenToCategory(LoggerHead.optionsFrames.LoggerHead)
 end
 
-local origInterfaceOptionsFrame_OnHide = InterfaceOptionsFrame_OnHide
-InterfaceOptionsFrame_OnHide = function(...)
-	LoggerHead.options = {}
-	collectgarbage("collect")
-	return origInterfaceOptionsFrame_OnHide(...)
-end
+--fuck whoever thought this was a good idea
+
+--local origInterfaceOptionsFrame_OnHide = InterfaceOptionsFrame_OnHide
+--InterfaceOptionsFrame_OnHide = function(...)
+--	LoggerHead.options = {}
+--	collectgarbage("collect")
+--	return origInterfaceOptionsFrame_OnHide(...)
+--end
+
 
 
 function LoggerHead:SetupOptions()
@@ -384,7 +393,7 @@ function LoggerHead.GenerateOptionsInternal()
 		--build our difficulty option table
 		for difficulty,_ in pairs(difficulties) do
             --@debug@
-			print(type,zone,difficulty,difficultyLookup[difficulty])
+			--print(type,zone,difficulty,difficultyLookup[difficulty])
             --@end-debug@
 			d[tonumber(difficulty)] = difficultyLookup[difficulty]
 		end
@@ -413,7 +422,7 @@ function LoggerHead:GetInstanceInformation()
     local difficulty = difficultyIndex
     
     --@debug@
-	print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
+	--print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
     --@end-debug@
     
     -- Unless Blizzard fixes scenarios to not return nil, let's hardcode this into returning "scenario" -Znuff
