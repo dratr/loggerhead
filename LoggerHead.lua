@@ -10,7 +10,7 @@ _G[modName] = mod
 -- GLOBALS: ENABLE, DISABLE, COMBAT_LOG, COMBATLOGDISABLED, CHATLOGDISABLED, COMBATLOGENABLED, CHATLOGENABLED
 -- GLOBALS: ARENA, PARTY, PVP, RAID, SETTINGS, BINDING_NAME_TOGGLECOMBATLOG
 
-local LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.0","AceEvent-3.0","AceTimer-3.0","LibSink-2.0")
+local LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.0","AceEvent-3.0","LibSink-2.0")
 
 local L = LibStub("AceLocale-3.0"):GetLocale("LoggerHead", true)
 local LDB = LibStub("LibDataBroker-1.1", true)
@@ -158,15 +158,7 @@ end
 
 function LoggerHead:ZoneChangedNewArea(event)
 	local zone, type, difficulty, difficultyName = self:GetInstanceInformation()
-
-	if (not zone) or difficulty == 0 then
-		-- zone hasn't been loaded yet, try again in 5 secs.
-		self:ScheduleTimer(self.ZoneChangedNewArea,5,self)
-        --@debug@
-		self:Print("Unable to determine zone - retrying in 5 secs")
-        --@end-debug@
-		return
-	end
+	if (not zone) or difficulty == 0 then return end
 	if zone == self.lastzone and difficulty == self.lastdiff then
 	  -- do nothing if the zone hasn't ACTUALLY changed
 	  -- otherwise we may override the user's manual enable/disable
