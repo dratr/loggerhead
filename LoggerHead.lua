@@ -159,7 +159,7 @@ end
 function LoggerHead:ZoneChangedNewArea(event)
 	local zone, type, difficulty, difficultyName = self:GetInstanceInformation()
 
-	if not zone and difficulty == 0 then
+	if (not zone) or difficulty == 0 then
 		-- zone hasn't been loaded yet, try again in 5 secs.
 		self:ScheduleTimer(self.ZoneChangedNewArea,5,self)
         --@debug@
