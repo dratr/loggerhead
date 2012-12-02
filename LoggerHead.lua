@@ -1,21 +1,10 @@
--- Global declarations for the findglobals script
--- http://www.wowace.com/addons/findglobals/
+local ADDON_NAME, ADDON_TABLE = ...
+local LoggerHead = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME, "AceConsole-3.0","AceEvent-3.0","LibSink-2.0")
 
-local mod = {}
-local modName = "LoggerHead"
-_G[modName] = mod
-
--- GLOBALS: LibStub, Transcriptor
--- GLOBALS: StaticPopupDialogs, StaticPopup_Show, InterfaceOptionsFrame_OpenToCategory, collectgarbage, assert
--- GLOBALS: ENABLE, DISABLE, COMBAT_LOG, COMBATLOGDISABLED, CHATLOGDISABLED, COMBATLOGENABLED, CHATLOGENABLED
--- GLOBALS: ARENA, PARTY, PVP, RAID, SETTINGS, BINDING_NAME_TOGGLECOMBATLOG
-
-local LoggerHead = LibStub("AceAddon-3.0"):NewAddon("LoggerHead", "AceConsole-3.0","AceEvent-3.0","LibSink-2.0")
-
-local L = LibStub("AceLocale-3.0"):GetLocale("LoggerHead", true)
+local L = LibStub("AceLocale-3.0"):GetLocale(ADDON_NAME, true)
 local LDB = LibStub("LibDataBroker-1.1", true)
 local LDBIcon = LDB and LibStub("LibDBIcon-1.0", true)
-local LoggerHeadDS = nil
+local LoggerHeadDS
 
 -- Localize a few functions
 
@@ -27,6 +16,11 @@ local pairs = _G.pairs
 local tonumber = _G.tonumber
 local string = _G.string
 
+local enabled_text = GREEN_FONT_COLOR_CODE..L["Enabled"]..FONT_COLOR_CODE_CLOSE
+local disabled_text = RED_FONT_COLOR_CODE..L["Disabled"]..FONT_COLOR_CODE_CLOSE
+local enabled_icon  = "Interface\\AddOns\\"..ADDON_NAME.."\\enabled"
+local disabled_icon = "Interface\\AddOns\\"..ADDON_NAME.."\\disabled"
+
 local difficultyLookup = {
 	DUNGEON_DIFFICULTY1,
 	DUNGEON_DIFFICULTY2,
@@ -35,7 +29,7 @@ local difficultyLookup = {
 	RAID_DIFFICULTY_10PLAYER_HEROIC,
 	RAID_DIFFICULTY_25PLAYER_HEROIC,
 	RAID_FINDER,
-    CHALLENGE_MODE,
+	CHALLENGE_MODE,
 	RAID_DIFFICULTY_40PLAYER
 }
 
@@ -100,8 +94,8 @@ end
 
 function LoggerHead:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
-
 	db = self.db.profile
+
 	self:SetSinkStorage(self.db.profile.sink)
 
 	if not db.version or db.version < 3 then
@@ -111,10 +105,10 @@ function LoggerHead:OnInitialize()
 
 	-- LDB launcher
 	if LDB then
-		LoggerHeadDS = LDB:NewDataObject("LoggerHead", {
-			icon = "Interface\\AddOns\\LoggerHead\\disabled",
+		LoggerHeadDS = LDB:NewDataObject(ADDON_NAME, {
+			icon = LoggingCombat() and enabled_icon or disabled_icon,
+			text = LoggingCombat() and enabled_text or disabled_text,
 			label = COMBAT_LOG,
-			text = COMBATLOGDISABLED,
 			type = "data source",
 			OnClick = function(self, button)
 				if button == "RightButton" then
@@ -130,15 +124,15 @@ function LoggerHead:OnInitialize()
 				end
 			end,
 			OnTooltipShow = function(tooltip)
-				tooltip:AddLine("LoggerHead")
+				tooltip:AddLine(ADDON_NAME)
 				tooltip:AddLine(" ")
 				tooltip:AddLine(L["Click to toggle combat logging"])
 				tooltip:AddLine(L["Right-click to open the options menu"])
 			end
 		})
 		if LDBIcon then
-			LDBIcon:Register("LoggerHead", LoggerHeadDS, db.minimap)
-			if (not db.minimap.hide) then LDBIcon:Show("LoggerHead") end
+			LDBIcon:Register(ADDON_NAME, LoggerHeadDS, db.minimap)
+			if (not db.minimap.hide) then LDBIcon:Show(ADDON_NAME) end
 		end
 	end
 
@@ -172,27 +166,27 @@ function LoggerHead:ZoneChangedNewArea(event)
     --@end-debug@
 
 	if type ~= "none" then
-		if LoggerHead.db.profile.log[type] == nil  then
-			LoggerHead.db.profile.log[type] = {}
+		if db.log[type] == nil  then
+			db.log[type] = {}
 		end
 
-		if LoggerHead.db.profile.log[type][zone] == nil then
-			LoggerHead.db.profile.log[type][zone] = {}
+		if db.log[type][zone] == nil then
+			db.log[type][zone] = {}
 		end
 
 		--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
-		if LoggerHead.db.profile.log[type][zone][difficulty] == nil then
-			if  LoggerHead.db.profile.prompt == true then
+		if db.log[type][zone][difficulty] == nil then
+			if  db.prompt == true then
 				self:StaticPopup()
 				StaticPopup_Show("LoggerHeadLogConfirm", ((difficultyName or "").." "..zone))
 				self.lastzone = nil
 				return  -- need to return and then callback to wait for user input
 			else
-				LoggerHead.db.profile.log[type][zone][difficulty] = false
+				db.log[type][zone][difficulty] = false
 			end
 		end
 
-		if LoggerHead.db.profile.log[type][zone][difficulty] then
+		if db.log[type][zone][difficulty] then
 			self:EnableLogging()
 			return
 		end
@@ -206,40 +200,39 @@ function LoggerHead:EnableLogging()
 	end
 	LoggingCombat(1)
 
-	if IsAddOnLoaded("Transcriptor") and LoggerHead.db.profile.transcriptor then
+	if IsAddOnLoaded("Transcriptor") and db.transcriptor then
 		Transcriptor:StartLog(true)
 	end
 
-	if LoggerHead.db.profile.chat then
+	if db.chat then
 		if not LoggingChat() then
 			self:Pour(CHATLOGENABLED)
 		end
 		LoggingChat(1)
 	end
 
-	LoggerHeadDS.icon = "Interface\\AddOns\\LoggerHead\\enabled"
-	LoggerHeadDS.text = "|cff00ff00"..L["Enabled"].."|r"
+	LoggerHeadDS.icon = enabled_icon 
+	LoggerHeadDS.text = enabled_text
 end
 
 function LoggerHead:DisableLogging()
-
 	if LoggingCombat() then
 		self:Pour(COMBATLOGDISABLED)
-        if IsAddOnLoaded("Transcriptor") and LoggerHead.db.profile.transcriptor then
+        if IsAddOnLoaded("Transcriptor") and db.transcriptor then
 		  Transcriptor:StopLog(true)
         end
 	end
 	LoggingCombat(0)
 
-	if LoggerHead.db.profile.chat then
+	if db.chat then
 		if LoggingChat() then
 			self:Pour(CHATLOGDISABLED)
 		end
 		LoggingChat(0)
 	end
 
-	LoggerHeadDS.icon = "Interface\\AddOns\\LoggerHead\\disabled"
-	LoggerHeadDS.text = "|cffff0000"..L["Disabled"].."|r"
+	LoggerHeadDS.icon = disabled_icon 
+	LoggerHeadDS.text = disabled_text
 end
 
 function LoggerHead:ShowConfig()
@@ -259,18 +252,18 @@ end
 
 
 function LoggerHead:SetupOptions()
-	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("LoggerHead", self.GenerateOptions)
+	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(ADDON_NAME, self.GenerateOptions)
 
 	local ACD3 = LibStub("AceConfigDialog-3.0")
 	LoggerHead.optionsFrames = {}
-	LoggerHead.optionsFrames.LoggerHead = ACD3:AddToBlizOptions("LoggerHead", "LoggerHead",nil, "general")
-	LoggerHead.optionsFrames.Instances	= ACD3:AddToBlizOptions("LoggerHead", ARENA, "LoggerHead","arena")
-	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions("LoggerHead", PARTY, "LoggerHead","party")
-	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions("LoggerHead", PVP, "LoggerHead","pvp")
-	LoggerHead.optionsFrames.Unknown	= ACD3:AddToBlizOptions("LoggerHead", RAID, "LoggerHead","raid")
-    LoggerHead.optionsFrames.Scenario	= ACD3:AddToBlizOptions("LoggerHead", SCENARIOS, "LoggerHead","scenario")
-	LoggerHead.optionsFrames.Output		= ACD3:AddToBlizOptions("LoggerHead", L["Output"], "LoggerHead","output")
-	LoggerHead.optionsFrames.Profiles	= ACD3:AddToBlizOptions("LoggerHead", L["Profiles"], "LoggerHead","profiles")
+	LoggerHead.optionsFrames.LoggerHead = ACD3:AddToBlizOptions(ADDON_NAME, ADDON_NAME,nil, "general")
+	LoggerHead.optionsFrames.Instances	= ACD3:AddToBlizOptions(ADDON_NAME, ARENA, ADDON_NAME,"arena")
+	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions(ADDON_NAME, PARTY, ADDON_NAME,"party")
+	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions(ADDON_NAME, PVP, ADDON_NAME,"pvp")
+	LoggerHead.optionsFrames.Unknown	= ACD3:AddToBlizOptions(ADDON_NAME, RAID, ADDON_NAME,"raid")
+    LoggerHead.optionsFrames.Scenario	= ACD3:AddToBlizOptions(ADDON_NAME, SCENARIOS, ADDON_NAME,"scenario")
+	LoggerHead.optionsFrames.Output		= ACD3:AddToBlizOptions(ADDON_NAME, L["Output"], ADDON_NAME,"output")
+	LoggerHead.optionsFrames.Profiles	= ACD3:AddToBlizOptions(ADDON_NAME, L["Profiles"], ADDON_NAME,"profiles")
 end
 
 function LoggerHead.GenerateOptions()
@@ -329,13 +322,13 @@ function LoggerHead.GenerateOptionsInternal()
 						set = function(info, v)
 							LoggerHead.db.profile.minimap.hide = not v
 							if v then
-								LDBIcon:Show("LoggerHead")
+								LDBIcon:Show(ADDON_NAME)
 							else
-								LDBIcon:Hide("LoggerHead")
+								LDBIcon:Hide(ADDON_NAME)
 							end
 						end,
 						order = 6,
-						hidden = function() return not LDBIcon or not LDBIcon:IsRegistered("LoggerHead") end,
+						hidden = function() return not LDBIcon or not LDBIcon:IsRegistered(ADDON_NAME) end,
 					},
 				},
 			},
