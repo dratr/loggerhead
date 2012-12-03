@@ -16,11 +16,10 @@ local pairs = _G.pairs
 local tonumber = _G.tonumber
 local string = _G.string
 
-local enabled_text = GREEN_FONT_COLOR_CODE..L["Enabled"]..FONT_COLOR_CODE_CLOSE
-local disabled_text = RED_FONT_COLOR_CODE..L["Disabled"]..FONT_COLOR_CODE_CLOSE
+local enabled_text = GREEN_FONT_COLOR_CODE..VIDEO_OPTIONS_ENABLED..FONT_COLOR_CODE_CLOSE
+local disabled_text = RED_FONT_COLOR_CODE..VIDEO_OPTIONS_DISABLED..FONT_COLOR_CODE_CLOSE
 local enabled_icon  = "Interface\\AddOns\\"..ADDON_NAME.."\\enabled"
 local disabled_icon = "Interface\\AddOns\\"..ADDON_NAME.."\\disabled"
-local prompt = L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"]
 
 local difficultyLookup = {
 	DUNGEON_DIFFICULTY1,
@@ -61,10 +60,12 @@ function LoggerHead:OnInitialize()
 		db.log = {}
 		db.version = 3
 	end
+	
+	L["prmopt"] = L["prompt"] or "You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"
 
 	Dialog:Register(ADDON_NAME, {
 		text = ADDON_NAME,
-		on_show = function(self, data) self.text:SetFormattedText(prompt, data.diff, data.zone) end,
+		on_show = function(self, data) self.text:SetFormattedText(data.prompt, data.diff, data.zone) end,
 		buttons = {
 			{ text = ENABLE,
 			  on_click = function(self, data) data.accept() end,
@@ -148,6 +149,7 @@ function LoggerHead:Update(event)
 		if db.log[zonetype][zone][difficulty] == nil then
 			if  db.prompt == true then
 				local data = {}
+				data.prompt = L["prompt"]
 				data.diff = difficultyName
 				data.zone = zone
 
