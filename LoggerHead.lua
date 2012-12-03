@@ -60,10 +60,6 @@ function LoggerHead:OnInitialize()
 		db.version = 3
 	end
 
-	if not L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"] then
-		L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"] = "You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"
-	end
-
 	Dialog:Register(ADDON_NAME, {
 		text = ADDON_NAME,
 		on_show = function(self, data) self.text:SetFormattedText(data.prompt, data.diff, data.zone) end,
