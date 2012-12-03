@@ -31,12 +31,5 @@ Libs\LibSink-2.0\lib.xml
 Libs\LibDialog-1.0\lib.xml
 #@end-no-lib-strip@
 
-LoggerHeadLocale-enUS.lua
-LoggerHeadLocale-frFR.lua
-LoggerHeadLocale-zhTW.lua
-LoggerHeadLocale-zhCN.lua
-LoggerHeadLocale-koKR.lua
-LoggerHeadLocale-ruRU.lua
-LoggerHeadLocale-itIT.lua
-
+Locale\Locale.xml
 Loggerhead.lua
