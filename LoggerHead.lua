@@ -1,6 +1,6 @@
 local ADDON_NAME, ADDON_TABLE = ...
 local LoggerHead = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME, "AceConsole-3.0","AceEvent-3.0","LibSink-2.0")
-
+local Dialog = LibStub("LibDialog-1.0")
 local L = LibStub("AceLocale-3.0"):GetLocale(ADDON_NAME, true)
 local LDB = LibStub("LibDataBroker-1.1", true)
 local LDBIcon = LDB and LibStub("LibDBIcon-1.0", true)
@@ -20,6 +20,7 @@ local enabled_text = GREEN_FONT_COLOR_CODE..L["Enabled"]..FONT_COLOR_CODE_CLOSE
 local disabled_text = RED_FONT_COLOR_CODE..L["Disabled"]..FONT_COLOR_CODE_CLOSE
 local enabled_icon  = "Interface\\AddOns\\"..ADDON_NAME.."\\enabled"
 local disabled_icon = "Interface\\AddOns\\"..ADDON_NAME.."\\disabled"
+local prompt = L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"]
 
 local difficultyLookup = {
 	DUNGEON_DIFFICULTY1,
@@ -49,48 +50,6 @@ local defaults = {
 	}
 }
 
-function LoggerHead:StaticPopup()
-	if not StaticPopupDialogs["LoggerHeadLogConfirm"]  then
-		StaticPopupDialogs["LoggerHeadLogConfirm"] = {
-			text = L["You have entered |cffd9d919%s|r. Enable logging for this area?"],
-			preferredIndex = 4,
-			button1 = ENABLE,
-			button2 = DISABLE,
-			sound = "levelup2",
-			whileDead = 0,
-			hideOnEscape = 1,
-			timeout = 0,
-			OnAccept = function()
-				local zone, type, difficulty = self:GetInstanceInformation()
-	
-				if LoggerHead.db.profile.log[type] == nil  then
-					LoggerHead.db.profile.log[type] = "scenario"
-				end
-	
-				if LoggerHead.db.profile.log[type][zone] == nil then
-					LoggerHead.db.profile.log[type][zone] = {}
-				end
-	
-				LoggerHead.db.profile.log[type][zone][difficulty] = true
-				self:ZoneChangedNewArea()
-			end,
-			OnCancel = function()
-				local zone, type, difficulty = self:GetInstanceInformation()
-	
-				if LoggerHead.db.profile.log[type] == nil  then
-					LoggerHead.db.profile.log[type] = "scenario"
-				end
-	
-				if LoggerHead.db.profile.log[type][zone] == nil then
-					LoggerHead.db.profile.log[type][zone] = {}
-				end
-	
-				LoggerHead.db.profile.log[type][zone][difficulty] = false
-				self:ZoneChangedNewArea()
-			end
-		}
-	end
-end
 
 function LoggerHead:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
@@ -103,6 +62,23 @@ function LoggerHead:OnInitialize()
 		db.version = 3
 	end
 
+	Dialog:Register(ADDON_NAME, {
+		text = ADDON_NAME,
+		on_show = function(self, data) self.text:SetFormattedText(prompt, data.diff, data.zone) end,
+		buttons = {
+			{ text = ENABLE,
+			  on_click = function(self, data) data.accept() end,
+			},
+			{ text = DISABLE,
+			  on_click = function(self, data) data.reject() end,
+			},
+		},
+		sound = "levelup2",
+		show_while_dead = true,
+		hide_on_escape = true,
+	})
+
+--]]
 	-- LDB launcher
 	if LDB then
 		LoggerHeadDS = LDB:NewDataObject(ADDON_NAME, {
@@ -143,16 +119,14 @@ end
 
 
 function LoggerHead:OnEnable()
-	-- self:RegisterEvent("ZONE_CHANGED_NEW_AREA","ZoneChangedNewArea")
-	self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","ZoneChangedNewArea")
-	self:RegisterEvent("UPDATE_INSTANCE_INFO","ZoneChangedNewArea")
-
-	self:ZoneChangedNewArea()
+	self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","Update")
+	self:RegisterEvent("UPDATE_INSTANCE_INFO","Update")
+	self:Update()
 end
 
-function LoggerHead:ZoneChangedNewArea(event)
-	local zone, type, difficulty, difficultyName = self:GetInstanceInformation()
-	if (not zone) or difficulty == 0 then return end
+function LoggerHead:Update(event)
+	local zone, zonetype, difficulty, difficultyName = self:GetInstanceInformation()
+	if (not zone) or (not zonetype) or difficulty == 0 then return end
 	if zone == self.lastzone and difficulty == self.lastdiff then
 	  -- do nothing if the zone hasn't ACTUALLY changed
 	  -- otherwise we may override the user's manual enable/disable
@@ -160,33 +134,48 @@ function LoggerHead:ZoneChangedNewArea(event)
 	end
         self.lastzone = zone
 	self.lastdiff = difficulty
-    
-    --@debug@
-	self:Print(event,type,zone,difficulty,difficultyName)
-    --@end-debug@
 
-	if type ~= "none" then
-		if db.log[type] == nil  then
-			db.log[type] = {}
+	if zonetype ~= "none" then
+		if db.log[zonetype] == nil  then
+			db.log[zonetype] = {}
 		end
 
-		if db.log[type][zone] == nil then
-			db.log[type][zone] = {}
+		if db.log[zonetype][zone] == nil then
+			db.log[zonetype][zone] = {}
 		end
 
 		--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
-		if db.log[type][zone][difficulty] == nil then
+		if db.log[zonetype][zone][difficulty] == nil then
 			if  db.prompt == true then
-				self:StaticPopup()
-				StaticPopup_Show("LoggerHeadLogConfirm", ((difficultyName or "").." "..zone))
+				local data = {}
+				data.diff = difficultyName
+				data.zone = zone
+
+				data.accept = function() 
+			 	 	db.log[zonetype][zone] = db.log[zonetype][zone] or {}
+					db.log[zonetype][zone][difficulty] = true
+					LoggerHead:Update()
+				end
+
+				data.reject = function()
+				  	db.log[zonetype][zone] = db.log[zonetype][zone] or {}
+					db.log[zonetype][zone][difficulty] = false
+					LoggerHead:Update()
+				end
+
+				if Dialog:ActiveDialog(ADDON_NAME) then
+					Dialog:Dismiss(ADDON_NAME)
+				end
+
+				Dialog:Spawn(ADDON_NAME, data)
 				self.lastzone = nil
 				return  -- need to return and then callback to wait for user input
 			else
-				db.log[type][zone][difficulty] = false
+				db.log[zonetype][zone][difficulty] = false
 			end
 		end
 
-		if db.log[type][zone][difficulty] then
+		if db.log[zonetype][zone][difficulty] then
 			self:EnableLogging()
 			return
 		end
@@ -372,49 +361,40 @@ function LoggerHead.GenerateOptionsInternal()
 		},
 	}
 
-	local function buildmenu(options,type,zone,difficulties)
+	local function buildmenu(options,zonetype,zone,difficulties)
 		local d = {}
 
 		--build our difficulty option table
 		for difficulty,_ in pairs(difficulties) do
-            --@debug@
-			--print(type,zone,difficulty,difficultyLookup[difficulty])
-            --@end-debug@
 			d[tonumber(difficulty)] = difficultyLookup[difficulty]
 		end
 
-		options.args[type].args[zone] = {
+		options.args[zonetype].args[zone] = {
 			type = "multiselect",
 			name = zone,
 			desc = BINDING_NAME_TOGGLECOMBATLOG,
 			values = function() return d end,
-			get = function(info,key) return (LoggerHead.db.profile.log[type][zone][key]) or nil end,
-			set = function(info,key, value) LoggerHead.db.profile.log[type][zone][key] = value end,
+			get = function(info,key) return (LoggerHead.db.profile.log[zonetype][zone][key]) or nil end,
+			set = function(info,key, value) LoggerHead.db.profile.log[zonetype][zone][key] = value end,
 		}
 	end
 
-	for type,v in pairs(db.log) do
+	for zonetype,v in pairs(db.log) do
 		for zone,v2 in pairs(v) do
-			if type ~= "none" then
-				buildmenu(LoggerHead.options,type,zone,v2)
+			if zonetype ~= "none" then
+				buildmenu(LoggerHead.options,zonetype,zone,v2)
 			end
 		end
 	end
 end
 
 function LoggerHead:GetInstanceInformation()
-	local zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo()
-    local difficulty = difficultyIndex
-    
-    --@debug@
-	--print(zone, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic)
-    --@end-debug@
-    
-    -- Unless Blizzard fixes scenarios to not return nil, let's hardcode this into returning "scenario" -Znuff
-    if type == nil and difficultyIndex == 1 then
-        type = "scenario"
-    end
-    
-	return zone, type, difficulty, difficultyLookup[difficulty]
+	local zone, zonetype, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo()
+	local difficulty = difficultyIndex
+	-- Unless Blizzard fixes scenarios to not return nil, let's hardcode this into returning "scenario" -Znuff
+	if zonetype == nil and difficultyIndex == 1 then
+		zonetype = "scenario"
+	end
+	return zone, zonetype, difficulty, difficultyLookup[difficulty]
 end
 
