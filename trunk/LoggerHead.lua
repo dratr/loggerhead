@@ -38,7 +38,6 @@ local defaults = {
 	profile = {
 		log = {},
 		prompt = true,
-		transcriptor = false,
 		chat = false,
 		sink = {},
 		minimap = {
@@ -193,10 +192,6 @@ function LoggerHead:EnableLogging()
 	end
 	LoggingCombat(1)
 
-	if IsAddOnLoaded("Transcriptor") and db.transcriptor then
-		Transcriptor:StartLog(true)
-	end
-
 	if db.chat then
 		if not LoggingChat() then
 			self:Pour(CHATLOGENABLED)
@@ -211,9 +206,6 @@ end
 function LoggerHead:DisableLogging()
 	if LoggingCombat() then
 		self:Pour(COMBATLOGDISABLED)
-        if IsAddOnLoaded("Transcriptor") and db.transcriptor then
-		  Transcriptor:StopLog(true)
-        end
 	end
 	LoggingCombat(0)
 
@@ -298,14 +290,6 @@ function LoggerHead.GenerateOptionsInternal()
 						desc = L["Enable Chat Logging whenever the Combat Log is enabled"],
 						get = function() return LoggerHead.db.profile.chat end,
 						set = function(v) LoggerHead.db.profile.chat = not LoggerHead.db.profile.chat end,
-					},
-					transcriptor = {
-						order = 5,
-						type = "toggle",
-						name = L["Enable Transcriptor Support"],
-						desc = L["Enable Transcriptor Logging whenever the Combat Log is enabled"],
-						get = function() return LoggerHead.db.profile.transcriptor end,
-						set = function(v) LoggerHead.db.profile.transcriptor = not LoggerHead.db.profile.transcriptor end,
 					},
 					minimap = {
 						type = "toggle",
