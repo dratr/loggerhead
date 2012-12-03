@@ -60,8 +60,10 @@ function LoggerHead:OnInitialize()
 		db.log = {}
 		db.version = 3
 	end
-	
-	L["prmopt"] = L["prompt"] or "You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"
+
+	if not L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"] then
+		L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"] = "You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"
+	end
 
 	Dialog:Register(ADDON_NAME, {
 		text = ADDON_NAME,
@@ -149,7 +151,7 @@ function LoggerHead:Update(event)
 		if db.log[zonetype][zone][difficulty] == nil then
 			if  db.prompt == true then
 				local data = {}
-				data.prompt = L["prompt"]
+				data.prompt = L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"]
 				data.diff = difficultyName
 				data.zone = zone
 
