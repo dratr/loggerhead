@@ -76,7 +76,6 @@ function LoggerHead:OnInitialize()
 		hide_on_escape = true,
 	})
 
---]]
 	-- LDB launcher
 	if LDB then
 		LoggerHeadDS = LDB:NewDataObject(ADDON_NAME, {
@@ -113,6 +112,10 @@ function LoggerHead:OnInitialize()
 	self:SetupOptions()
 
 	self:RegisterChatCommand("loggerhead", function() LoggerHead:ShowConfig() end)
+
+        hooksecurefunc("LoggingCombat", function(input)
+		LoggerHead:UpdateLDB()
+	end)
 end
 
 
@@ -130,10 +133,10 @@ function LoggerHead:Update(event)
 	  -- otherwise we may override the user's manual enable/disable
 	  return
 	end
-        self.lastzone = zone
+	self.lastzone = zone
 	self.lastdiff = difficulty
 
-	if zonetype ~= "none" then
+	if zonetype ~= "none" and zonetype and difficulty and difficultyName and zone then
 		if db.log[zonetype] == nil  then
 			db.log[zonetype] = {}
 		end
@@ -144,7 +147,7 @@ function LoggerHead:Update(event)
 
 		--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
 		if db.log[zonetype][zone][difficulty] == nil then
-			if  db.prompt == true then 
+			if db.prompt == true then 
 				local data = {}
 				data.prompt = L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"]
 				data.diff = difficultyName or ""
@@ -182,6 +185,16 @@ function LoggerHead:Update(event)
 	self:DisableLogging()
 end
 
+function LoggerHead:UpdateLDB(slash)
+	if LoggingCombat() then
+		LoggerHeadDS.icon = enabled_icon 
+		LoggerHeadDS.text = enabled_text
+	else
+		LoggerHeadDS.icon = disabled_icon 
+		LoggerHeadDS.text = disabled_text
+	end
+end
+
 function LoggerHead:EnableLogging()
 	if not LoggingCombat() then
 		self:Pour(COMBATLOGENABLED)
@@ -194,9 +207,7 @@ function LoggerHead:EnableLogging()
 		end
 		LoggingChat(1)
 	end
-
-	LoggerHeadDS.icon = enabled_icon 
-	LoggerHeadDS.text = enabled_text
+	self:UpdateLDB()
 end
 
 function LoggerHead:DisableLogging()
@@ -211,26 +222,13 @@ function LoggerHead:DisableLogging()
 		end
 		LoggingChat(0)
 	end
-
-	LoggerHeadDS.icon = disabled_icon 
-	LoggerHeadDS.text = disabled_text
+	self:UpdateLDB()
 end
 
 function LoggerHead:ShowConfig()
 	InterfaceOptionsFrame_OpenToCategory(LoggerHead.optionsFrames.Profiles)
 	InterfaceOptionsFrame_OpenToCategory(LoggerHead.optionsFrames.LoggerHead)
 end
-
---fuck whoever thought this was a good idea
-
---local origInterfaceOptionsFrame_OnHide = InterfaceOptionsFrame_OnHide
---InterfaceOptionsFrame_OnHide = function(...)
---	LoggerHead.options = {}
---	collectgarbage("collect")
---	return origInterfaceOptionsFrame_OnHide(...)
---end
-
-
 
 function LoggerHead:SetupOptions()
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(ADDON_NAME, self.GenerateOptions)
@@ -242,7 +240,7 @@ function LoggerHead:SetupOptions()
 	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions(ADDON_NAME, PARTY, ADDON_NAME,"party")
 	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions(ADDON_NAME, PVP, ADDON_NAME,"pvp")
 	LoggerHead.optionsFrames.Unknown	= ACD3:AddToBlizOptions(ADDON_NAME, RAID, ADDON_NAME,"raid")
-    LoggerHead.optionsFrames.Scenario	= ACD3:AddToBlizOptions(ADDON_NAME, SCENARIOS, ADDON_NAME,"scenario")
+	LoggerHead.optionsFrames.Scenario	= ACD3:AddToBlizOptions(ADDON_NAME, SCENARIOS, ADDON_NAME,"scenario")
 	LoggerHead.optionsFrames.Output		= ACD3:AddToBlizOptions(ADDON_NAME, L["Output"], ADDON_NAME,"output")
 	LoggerHead.optionsFrames.Profiles	= ACD3:AddToBlizOptions(ADDON_NAME, L["Profiles"], ADDON_NAME,"profiles")
 end
