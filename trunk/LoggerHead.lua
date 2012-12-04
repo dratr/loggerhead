@@ -144,11 +144,11 @@ function LoggerHead:Update(event)
 
 		--Added test of 'prompt' option below. The option was added in a previous version, but apparently regressed. -JCinDE
 		if db.log[zonetype][zone][difficulty] == nil then
-			if  db.prompt == true then
+			if  db.prompt == true then 
 				local data = {}
 				data.prompt = L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"]
-				data.diff = difficultyName
-				data.zone = zone
+				data.diff = difficultyName or ""
+				data.zone = zone or ""
 
 				data.accept = function() 
 			 	 	db.log[zonetype][zone] = db.log[zonetype][zone] or {}
