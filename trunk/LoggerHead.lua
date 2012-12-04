@@ -124,7 +124,7 @@ end
 
 function LoggerHead:Update(event)
 	local zone, zonetype, difficulty, difficultyName = self:GetInstanceInformation()
-	if (not zone) or difficulty == 0 then return end
+	if (not zone) and difficulty == 0 then return end
 	if zone == self.lastzone and difficulty == self.lastdiff then
 	  -- do nothing if the zone hasn't ACTUALLY changed
 	  -- otherwise we may override the user's manual enable/disable
