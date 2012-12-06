@@ -149,7 +149,7 @@ function LoggerHead:Update(event)
 		if db.log[zonetype][zone][difficulty] == nil then
 			if db.prompt == true then 
 				local data = {}
-				data.prompt = L["You have entered |cffd9d919%s %s|r.\nEnable logging for this area?"]
+				data.prompt = L["You have entered |cffd9d919%s %s|r. Enable logging for this area?"]
 				data.diff = difficultyName or ""
 				data.zone = zone or ""
 
