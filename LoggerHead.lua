@@ -362,9 +362,11 @@ function LoggerHead.GenerateOptionsInternal()
 	end
 
 	for zonetype,v in pairs(db.log) do
-		for zone,v2 in pairs(v) do
-			if zonetype ~= "none" then
-				buildmenu(LoggerHead.options,zonetype,zone,v2)
+		if zonetype ~= "none" then
+			for zone,v2 in pairs(v) do
+				if zonetype ~= "none" then
+					buildmenu(LoggerHead.options,zonetype,zone,v2)
+				end
 			end
 		end
 	end
