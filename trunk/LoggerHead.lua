@@ -30,7 +30,12 @@ local difficultyLookup = {
 	RAID_DIFFICULTY_25PLAYER_HEROIC,
 	RAID_FINDER,
 	CHALLENGE_MODE,
-	RAID_DIFFICULTY_40PLAYER
+	RAID_DIFFICULTY_40PLAYER,
+	nil,
+	nil, -- Norm scen
+	nil, -- heroic scen
+	nil,
+	PLAYER_DIFFICULTY4
 }
 
 local db
