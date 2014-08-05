@@ -35,7 +35,10 @@ local difficultyLookup = {
 	nil, -- Norm scen
 	nil, -- heroic scen
 	nil,
-	PLAYER_DIFFICULTY4
+	PLAYER_DIFFICULTY1, --14: Normal
+	PLAYER_DIFFICULTY2, -- 15: Heroic
+	PLAYER_DIFFICULTY6, -- 16: Mythic
+	PLAYER_DIFFICULTY3 -- 17: Raid Finder
 }
 
 local db
@@ -379,11 +382,7 @@ end
 
 function LoggerHead:GetInstanceInformation()
 	local zone, zonetype, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo()
-	local difficulty = difficultyIndex
-	-- Unless Blizzard fixes scenarios to not return nil, let's hardcode this into returning "scenario" -Znuff
-	if zonetype == nil and difficultyIndex == 1 then
-		zonetype = "scenario"
-	end
+	local difficulty = difficultyIndex	
 	return zone, zonetype, difficulty, difficultyLookup[difficulty]
 end
 
