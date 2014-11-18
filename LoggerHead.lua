@@ -207,13 +207,13 @@ function LoggerHead:EnableLogging()
 	if not LoggingCombat() then
 		self:Pour(COMBATLOGENABLED)
 	end
-	LoggingCombat(1)
+	LoggingCombat(true)
 
 	if db.chat then
 		if not LoggingChat() then
 			self:Pour(CHATLOGENABLED)
 		end
-		LoggingChat(1)
+		LoggingChat(true)
 	end
 	self:UpdateLDB()
 end
@@ -222,7 +222,7 @@ function LoggerHead:DisableLogging()
 	if LoggingCombat() then
 		self:Pour(COMBATLOGDISABLED)
 	end
-	LoggingCombat(nil)
+	LoggingCombat(false)
 
 	if db.chat then
 		if LoggingChat() then
