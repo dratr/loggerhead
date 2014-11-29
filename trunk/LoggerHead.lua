@@ -21,6 +21,15 @@ local disabled_text = RED_FONT_COLOR_CODE..VIDEO_OPTIONS_DISABLED..FONT_COLOR_CO
 local enabled_icon  = "Interface\\AddOns\\"..ADDON_NAME.."\\enabled"
 local disabled_icon = "Interface\\AddOns\\"..ADDON_NAME.."\\disabled"
 
+local garrisonmaps = {
+	[1152] = true,  -- Horde level 1
+	[1330] = true,  -- Horde level 2
+	[1153] = true,  -- Horde level 3
+	[1158] = true,  -- Alliance level 1
+	[1331] = true,  -- Alliance level 2
+	[1159] = true,  -- Alliance level 3
+}
+
 local difficultyLookup = {
 	DUNGEON_DIFFICULTY1,
 	DUNGEON_DIFFICULTY2,
@@ -381,7 +390,8 @@ function LoggerHead.GenerateOptionsInternal()
 end
 
 function LoggerHead:GetInstanceInformation()
-	local zone, zonetype, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo()
+	local zone, zonetype, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, mapid = GetInstanceInfo()
+	if garrisonmaps[mapid] then return nil end
 	local difficulty = difficultyIndex	
 	return zone, zonetype, difficulty, difficultyLookup[difficulty]
 end
