@@ -27,7 +27,7 @@ local garrisonmaps = {
 	[1153] = true,  -- Horde level 3
 	[1158] = true,  -- Alliance level 1
 	[1331] = true,  -- Alliance level 2
-	[1159] = true,  -- Alliance level 3
+	[1160] = true,  -- Alliance level 3
 }
 
 local difficultyLookup = {
