@@ -31,23 +31,30 @@ local garrisonmaps = {
 }
 
 local difficultyLookup = {
-	DUNGEON_DIFFICULTY1,
-	DUNGEON_DIFFICULTY2,
-	RAID_DIFFICULTY_10PLAYER,
-	RAID_DIFFICULTY_25PLAYER,
-	RAID_DIFFICULTY_10PLAYER_HEROIC,
-	RAID_DIFFICULTY_25PLAYER_HEROIC,
-	RAID_FINDER,
-	CHALLENGE_MODE,
-	RAID_DIFFICULTY_40PLAYER,
-	nil,
-	nil, -- Norm scen
-	nil, -- heroic scen
-	nil,
-	PLAYER_DIFFICULTY1, --14: Normal
-	PLAYER_DIFFICULTY2, -- 15: Heroic
-	PLAYER_DIFFICULTY6, -- 16: Mythic
-	PLAYER_DIFFICULTY3 -- 17: Raid Finder
+	DUNGEON_DIFFICULTY1, -- 1: Normal dungeon
+	DUNGEON_DIFFICULTY2, -- 2: Heroic dungeon
+	RAID_DIFFICULTY_10PLAYER, -- 3: 10 man raid
+	RAID_DIFFICULTY_25PLAYER, -- 4: 25 man raid
+	RAID_DIFFICULTY_10PLAYER_HEROIC, -- 5: 10 man heroic raid
+	RAID_DIFFICULTY_25PLAYER_HEROIC, -- 6: 25 man heroic raid
+	RAID_FINDER, -- 7: Pre-SoO LFR
+	CHALLENGE_MODE, -- 8: CM dungeon
+	RAID_DIFFICULTY_40PLAYER, -- 9: 40-man raid
+	nil, -- 10: Unknown
+	nil, -- 11: Norm scen
+	nil, -- 12: heroic scen
+	nil, -- 13: Unknown
+	PLAYER_DIFFICULTY1, --14: Normal Raid
+	PLAYER_DIFFICULTY2, -- 15: Heroic Raid
+	PLAYER_DIFFICULTY6, -- 16: Mythic Raid
+	PLAYER_DIFFICULTY3, -- 17: Raid Finder
+	nil, -- 18: Unknown
+	nil, -- 19: Unknown
+	nil, -- 20: Unknown
+	nil, -- 21: Unknown
+	nil, -- 22: Unknown
+	PLAYER_DIFFICULTY6, -- 23: Mythic dungeon
+	"Timewalking" -- 24: Timewalking
 }
 
 local db
