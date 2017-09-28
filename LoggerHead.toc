@@ -1,4 +1,4 @@
-## Interface: 70100
+## Interface: 70300
 ## Title: LoggerHead
 ## Notes: Automatically turns on the combat log for selected instances
 ## Notes-ruRU: Автоматически включает запись лога боя в выбранных подземельях
