@@ -95,7 +95,7 @@ function LoggerHead:OnInitialize()
 			  on_click = function(self, data) data.reject() end,
 			},
 		},
-		sound = "levelup2",
+		sound = SOUNDKIT.READY_CHECK,
 		show_while_dead = true,
 		hide_on_escape = true,
 	})
