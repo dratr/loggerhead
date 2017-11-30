@@ -97,6 +97,7 @@ function LoggerHead:OnInitialize()
 		},
 		sound = SOUNDKIT.READY_CHECK,
 		show_while_dead = true,
+		show_during_cinematic = true,
 		hide_on_escape = true,
 	})
 
@@ -149,6 +150,11 @@ function LoggerHead:OnEnable()
 	self:Update()
 end
 
+function LoggerHead:ForceUpdate()
+	self.lastzone = nil
+	self:Update()
+end
+
 function LoggerHead:Update(event)
 	local zone, zonetype, difficulty, difficultyName = self:GetInstanceInformation()
 	if (not zone) and difficulty == 0 then return end
@@ -180,13 +186,13 @@ function LoggerHead:Update(event)
 				data.accept = function() 
 			 	 	db.log[zonetype][zone] = db.log[zonetype][zone] or {}
 					db.log[zonetype][zone][difficulty] = true
-					LoggerHead:Update()
+					LoggerHead:ForceUpdate()
 				end
 
 				data.reject = function()
 				  	db.log[zonetype][zone] = db.log[zonetype][zone] or {}
 					db.log[zonetype][zone][difficulty] = false
-					LoggerHead:Update()
+					LoggerHead:ForceUpdate()
 				end
 
 				if Dialog:ActiveDialog(ADDON_NAME) then
