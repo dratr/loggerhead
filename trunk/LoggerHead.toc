@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: LoggerHead
 ## Notes: Automatically turns on the combat log for selected instances
 ## Notes-ruRU: Автоматически включает запись лога боя в выбранных подземельях
