@@ -1,6 +1,5 @@
 local ADDON_NAME, ADDON_TABLE = ...
 local LoggerHead = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME, "AceConsole-3.0","AceEvent-3.0","LibSink-2.0")
-local Dialog = LibStub("LibDialog-1.0")
 local L = LibStub("AceLocale-3.0"):GetLocale(ADDON_NAME, true)
 local LDB = LibStub("LibDataBroker-1.1", true)
 local LDBIcon = LDB and LibStub("LibDBIcon-1.0", true)
@@ -20,6 +19,24 @@ local enabled_text = GREEN_FONT_COLOR_CODE..VIDEO_OPTIONS_ENABLED..FONT_COLOR_CO
 local disabled_text = RED_FONT_COLOR_CODE..VIDEO_OPTIONS_DISABLED..FONT_COLOR_CODE_CLOSE
 local enabled_icon  = "Interface\\AddOns\\"..ADDON_NAME.."\\enabled"
 local disabled_icon = "Interface\\AddOns\\"..ADDON_NAME.."\\disabled"
+
+local ID_ENABLE = 1
+local ID_DISABLE = 2
+
+local DLG_BACKDROP = {
+    bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]],
+    edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
+    insets = {
+        left = 11,
+        right = 12,
+        top = 12,
+        bottom = 11,
+    },
+}
+
 
 local garrisonmaps = {
 	[1152] = true,  -- Horde level 1
@@ -72,6 +89,58 @@ local defaults = {
 	}
 }
 
+if not LoggerHead.escape_hooked then
+	_G.hooksecurefunc("StaticPopup_EscapePressed", function()
+		LoggerHead.promptDialog:Hide()
+	end)
+	LoggerHead.escape_hooked = true
+end
+
+local function LoggerHead_ButtonOnClick(btn, mousebtn, down)
+	local promptDialog = btn:GetParent()
+	if btn:GetID() == ID_ENABLE then
+		promptDialog.data.accept()
+	else
+		promptDialog.data.reject()
+	end
+	-- Hide dialog
+	promptDialog:Hide()
+end
+
+function LoggerHead:CreateButton(btnName, parent, text)
+	local newBtn = _G.CreateFrame("Button", btnName, parent)
+	newBtn:SetWidth(128)
+	newBtn:SetHeight(21)
+
+	newBtn:SetNormalTexture([[Interface\Buttons\UI-DialogBox-Button-Up]])
+	newBtn:GetNormalTexture():SetTexCoord(0, 1, 0, 0.71875)
+
+	newBtn:SetPushedTexture([[Interface\Buttons\UI-DialogBox-Button-Down]])
+	newBtn:GetPushedTexture():SetTexCoord(0, 1, 0, 0.71875)
+	newBtn:SetDisabledTexture([[Interface\Buttons\UI-DialogBox-Button-Disabled]])
+	newBtn:GetDisabledTexture():SetTexCoord(0, 1, 0, 0.71875)
+
+	newBtn:SetHighlightTexture([[Interface\Buttons\UI-DialogBox-Button-Highlight]], "ADD")
+	newBtn:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.71875)
+
+	newBtn:SetNormalFontObject("GameFontNormal")
+	newBtn:SetDisabledFontObject("GameFontDisable")
+	newBtn:SetHighlightFontObject("GameFontHighlight")
+
+	newBtn:SetText(text)
+	newBtn:SetScript("OnClick", LoggerHead_ButtonOnClick)
+
+	newBtn:Show()
+	local w = newBtn:GetTextWidth()
+	if w > 110 then
+		newBtn:SetWidth(w + 20)
+	else
+		newBtn:SetWidth(120)
+	end
+	newBtn:Enable()
+
+	return newBtn
+end
 
 function LoggerHead:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
@@ -84,22 +153,39 @@ function LoggerHead:OnInitialize()
 		db.version = 3
 	end
 
-	Dialog:Register(ADDON_NAME, {
-		text = ADDON_NAME,
-		on_show = function(self, data) self.text:SetFormattedText(data.prompt, data.diff, data.zone) end,
-		buttons = {
-			{ text = ENABLE,
-			  on_click = function(self, data) data.accept() end,
-			},
-			{ text = DISABLE,
-			  on_click = function(self, data) data.reject() end,
-			},
-		},
-		sound = SOUNDKIT.READY_CHECK,
-		show_while_dead = true,
-		show_during_cinematic = true,
-		hide_on_escape = true,
-	})
+	-- Create dialog used when prompting to enable/disable new instances
+	self.promptDialog = _G.CreateFrame("Frame",
+		ADDON_NAME .. "_PromptDialog", _G.UIParent, "BackdropTemplate")
+	self.promptDialog:SetWidth(320)
+	self.promptDialog:SetHeight(72)
+	self.promptDialog:SetBackdrop(DLG_BACKDROP)
+	self.promptDialog:SetToplevel(true)
+	self.promptDialog:SetFrameStrata("DIALOG")
+	self.promptDialog:EnableMouse(true)
+	
+	
+	local closeBtn = _G.CreateFrame("Button", nil,
+		self.promptDialog, "UIPanelCloseButton")
+	closeBtn:SetPoint("TOPRIGHT", -3, -3)
+	local text = self.promptDialog:CreateFontString(nil, nil,
+		"GameFontHighlight")
+	-- Leave some space for close button and other things
+	text:SetWidth(320 - 60)
+	text:SetPoint("TOP", 0, -16)
+	self.promptDialog.text = text
+
+	self.promptDialog.text:SetText(ADDON_NAME)
+	
+	local promptEnButton = self:CreateButton(ADDON_NAME .. "_PromptEnBtn",
+			self.promptDialog, ENABLE)
+	local promptDisButton = self:CreateButton(ADDON_NAME .. "_PromptDisBtn",
+			self.promptDialog, DISABLE)
+	
+	promptEnButton:SetPoint("BOTTOMRIGHT", self.promptDialog,
+		"BOTTOM", -6, 16)
+	promptEnButton:SetID(ID_ENABLE)
+	promptDisButton:SetPoint("LEFT", promptEnButton, "RIGHT", 13, 0)
+	promptDisButton:SetID(ID_DISABLE)
 
 	-- LDB launcher
 	if LDB then
@@ -138,7 +224,7 @@ function LoggerHead:OnInitialize()
 
 	self:RegisterChatCommand("loggerhead", function() LoggerHead:ShowConfig() end)
 
-        hooksecurefunc("LoggingCombat", function(input)
+	hooksecurefunc("LoggingCombat", function(input)
 		LoggerHead:UpdateLDB()
 	end)
 end
@@ -195,11 +281,19 @@ function LoggerHead:Update(event)
 					LoggerHead:ForceUpdate()
 				end
 
-				if Dialog:ActiveDialog(ADDON_NAME) then
-					Dialog:Dismiss(ADDON_NAME)
-				end
+				self.promptDialog:Hide()
 
-				Dialog:Spawn(ADDON_NAME, data)
+				self.promptDialog.data = data
+
+				_G.PlaySound(SOUNDKIT.READY_CHECK)
+				self.promptDialog:SetPoint("TOP", _G.UIParent, "TOP", 0, -135)
+				self.promptDialog.text:SetFormattedText(data.prompt, data.diff, data.zone)
+				
+				self.promptDialog:Show()
+				-- height = pad + button height + pad + text
+				local dlgHeight = 8 + 21 + 32 + self.promptDialog.text:GetHeight()
+				self.promptDialog:SetHeight(dlgHeight)
+
 				self.lastzone = nil
 				return  -- need to return and then callback to wait for user input
 			else

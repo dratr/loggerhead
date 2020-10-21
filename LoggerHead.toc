@@ -6,7 +6,7 @@
 ## X-eMail: rsmozang@gmail.com
 ## X-Category: Miscellaneous
 ## Version: 196
-## OptionalDeps: Ace3, LibSink-2.0, LibDBIcon-1.0, LibDialog-1.0
+## OptionalDeps: Ace3, LibSink-2.0, LibDBIcon-1.0
 ## SavedVariables: LoggerHeadDB
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
@@ -25,7 +25,6 @@ Libs\AceConfig-3.0\AceConfig-3.0.xml
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 Libs\LibDBIcon-1.0\lib.xml
 Libs\LibSink-2.0\lib.xml
-Libs\LibDialog-1.0\lib.xml
 #@end-no-lib-strip@
 
 Locale\Locale.xml
