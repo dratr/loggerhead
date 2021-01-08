@@ -71,7 +71,8 @@ local difficultyLookup = {
 	nil, -- 21: Unknown
 	nil, -- 22: Unknown
 	PLAYER_DIFFICULTY6, -- 23: Mythic dungeon
-	"Timewalking" -- 24: Timewalking
+	"Timewalking", -- 24: Timewalking
+	[167] = "Torghast"
 }
 
 local db
