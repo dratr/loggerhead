@@ -10,6 +10,7 @@
 ## SavedVariables: LoggerHeadDB
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
+## X-Curse-Project-ID: 14345
 
 #@no-lib-strip@
 Libs\LibStub\LibStub.lua

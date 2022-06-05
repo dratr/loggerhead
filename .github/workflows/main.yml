@@ -35,8 +35,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0  # gets git history for changelogs
+        run: echo "TAGGEDVER=${GITHUB_REF#refs/*/release-}" >> $GITHUB_ENV
 
       # once cloned, we just run the GitHub Action for the packager project
       - name: Package and release
         uses: BigWigsMods/packager@v2
-
+        with:
+          args: -w 0 -a 0 -n "{package-name}-$TAGGEDVER{nolib}"
