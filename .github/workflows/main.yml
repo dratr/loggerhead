@@ -29,13 +29,16 @@ jobs:
 
     # "steps" holds a list of all the steps needed to package and release our AddOn
     steps:
+    
+
+      - name: Set Release Version
+        run: echo "TAGGEDVER=${GITHUB_REF#refs/*/release-}" >> $GITHUB_ENV
 
       # we first have to clone the AddOn project, this is a required step
       - name: Clone project
         uses: actions/checkout@v2
         with:
           fetch-depth: 0  # gets git history for changelogs
-        run: echo "TAGGEDVER=${GITHUB_REF#refs/*/release-}" >> $GITHUB_ENV
 
       # once cloned, we just run the GitHub Action for the packager project
       - name: Package and release
