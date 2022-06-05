@@ -1,9 +1,8 @@
-## Interface: 90200
+## Interface: 90205
 ## Title: LoggerHead
 ## Notes: Automatically turns on the combat log for selected instances
 ## Notes-ruRU: Автоматически включает запись лога боя в выбранных подземельях
 ## Author: 
-## X-eMail: rsmozang@gmail.com
 ## X-Category: Miscellaneous
 ## Version: 200
 ## OptionalDeps: Ace3, LibSink-2.0, LibDBIcon-1.0
