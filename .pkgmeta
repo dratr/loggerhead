@@ -18,4 +18,4 @@ externals:
     Libs/AceLocale-3.0: https://repos.wowace.com/wow/ace3/trunk/AceLocale-3.0
     Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
     Libs/LibSink-2.0: https://repos.wowace.com/wow/libsink-2-0/trunk/LibSink-2.0
-    Libs/LibDataBroker-1.1: git://github.com/tekkub/libdatabroker-1-1.git
+    Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1.git
