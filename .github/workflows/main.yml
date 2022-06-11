@@ -44,4 +44,4 @@ jobs:
       - name: Package and release
         uses: BigWigsMods/packager@v2
         with:
-          args: -w 0 -a 0 -n "{package-name}-$TAGGEDVER{nolib}"
+          args: -w 26344 -a 0 -n "{package-name}-$TAGGEDVER{nolib}"
