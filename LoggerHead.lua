@@ -5,16 +5,6 @@ local LDB = LibStub("LibDataBroker-1.1", true)
 local LDBIcon = LDB and LibStub("LibDBIcon-1.0", true)
 local LoggerHeadDS
 
--- Localize a few functions
-
-local LoggingCombat = _G.LoggingCombat
-local LoggingChat = _G.LoggingChat
-local IsAddOnLoaded = _G.IsAddOnLoaded
-local GetInstanceInfo = _G.GetInstanceInfo
-local pairs = _G.pairs
-local tonumber = _G.tonumber
-local string = _G.string
-
 local enabled_text = GREEN_FONT_COLOR_CODE..VIDEO_OPTIONS_ENABLED..FONT_COLOR_CODE_CLOSE
 local disabled_text = RED_FONT_COLOR_CODE..VIDEO_OPTIONS_DISABLED..FONT_COLOR_CODE_CLOSE
 local enabled_icon  = "Interface\\AddOns\\"..ADDON_NAME.."\\enabled"
