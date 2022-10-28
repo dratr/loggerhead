@@ -8,7 +8,7 @@ name: Package and release
 on:
   push:
     tags:
-      - 'release-*'
+      - '**'
 
 # a workflow is built up as jobs, and within these jobs are steps
 jobs:
@@ -31,9 +31,6 @@ jobs:
     steps:
     
 
-      - name: Set Release Version
-        run: echo "TAGGEDVER=${GITHUB_REF#refs/*/release-}" >> $GITHUB_ENV
-
       # we first have to clone the AddOn project, this is a required step
       - name: Clone project
         uses: actions/checkout@v2
@@ -44,4 +41,5 @@ jobs:
       - name: Package and release
         uses: BigWigsMods/packager@v2
         with:
-          args: -w 26344 -a 0 -n "{package-name}-$TAGGEDVER{nolib}"
+          # args: -w 26344 -a 0 -p 0
+          args: -w 0 -a 0 -p 0

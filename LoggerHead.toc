@@ -1,15 +1,16 @@
-## Interface: 90205
+## Interface: 100000
 ## Title: LoggerHead
 ## Notes: Automatically turns on the combat log for selected instances
 ## Notes-ruRU: Автоматически включает запись лога боя в выбранных подземельях
 ## Author: 
 ## X-Category: Miscellaneous
-## Version: 200
+## Version: @project-version@
 ## OptionalDeps: Ace3, LibSink-2.0, LibDBIcon-1.0
 ## SavedVariables: LoggerHeadDB
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
 ## X-Curse-Project-ID: 14345
+## X-WoWI-ID: 26344
 
 #@no-lib-strip@
 Libs\LibStub\LibStub.lua
