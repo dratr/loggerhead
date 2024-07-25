@@ -351,8 +351,7 @@ function LoggerHead:DisableLogging()
 end
 
 function LoggerHead:ShowConfig()
-	InterfaceOptionsFrame_OpenToCategory(LoggerHead.optionsFrames.Profiles)
-	InterfaceOptionsFrame_OpenToCategory(LoggerHead.optionsFrames.LoggerHead)
+	Settings.OpenToCategory("LoggerHead")
 end
 
 function LoggerHead:SetupOptions()
