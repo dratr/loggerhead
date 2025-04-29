@@ -33,7 +33,7 @@ jobs:
 
       # we first have to clone the AddOn project, this is a required step
       - name: Clone project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # gets git history for changelogs
 
@@ -44,7 +44,7 @@ jobs:
           # args: -w 26344 -a 0 -p 0
           args: -a 0
       - name: Archive output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: output
           path: .release/LoggerHead
