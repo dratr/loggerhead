@@ -72,6 +72,7 @@ local difficultyLookup = {
 	nil, -- 22: Unknown
 	PLAYER_DIFFICULTY6, -- 23: Mythic dungeon
 	"Timewalking", -- 24: Timewalking
+	[152] = "Visions of N'Zoth",
 	[167] = "Torghast",
 	[208] = "Delves"
 }
