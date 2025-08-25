@@ -296,7 +296,6 @@ function LoggerHead:Update(event)
 				local dlgHeight = 8 + 21 + 32 + self.promptDialog.text:GetHeight()
 				self.promptDialog:SetHeight(dlgHeight)
 
-				self.lastzone = nil
 				return  -- need to return and then callback to wait for user input
 			else
 				db.log[zonetype][zone][difficulty] = false
