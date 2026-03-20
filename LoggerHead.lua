@@ -352,7 +352,7 @@ function LoggerHead:DisableLogging()
 end
 
 function LoggerHead:ShowConfig()
-	Settings.OpenToCategory("LoggerHead")
+	Settings.OpenToCategory(LoggerHead.optionsCat)
 end
 
 function LoggerHead:SetupOptions()
@@ -360,7 +360,7 @@ function LoggerHead:SetupOptions()
 
 	local ACD3 = LibStub("AceConfigDialog-3.0")
 	LoggerHead.optionsFrames = {}
-	LoggerHead.optionsFrames.LoggerHead = ACD3:AddToBlizOptions(ADDON_NAME, ADDON_NAME,nil, "general")
+	LoggerHead.optionsFrames.LoggerHead, LoggerHead.optionsCat = ACD3:AddToBlizOptions(ADDON_NAME, ADDON_NAME,nil, "general")
 	LoggerHead.optionsFrames.Instances	= ACD3:AddToBlizOptions(ADDON_NAME, ARENA, ADDON_NAME,"arena")
 	LoggerHead.optionsFrames.Zones		= ACD3:AddToBlizOptions(ADDON_NAME, PARTY, ADDON_NAME,"party")
 	LoggerHead.optionsFrames.Pvp		= ACD3:AddToBlizOptions(ADDON_NAME, PVP, ADDON_NAME,"pvp")
