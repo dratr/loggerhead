@@ -74,7 +74,8 @@ local difficultyLookup = {
 	"Timewalking", -- 24: Timewalking
 	[152] = "Visions of N'Zoth",
 	[167] = "Torghast",
-	[208] = "Delves"
+	[208] = "Delves",
+	[233] = "Flexible Mythic"
 }
 
 local db
