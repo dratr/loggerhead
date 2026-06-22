@@ -149,6 +149,15 @@ function LoggerHead:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("LoggerHeadDB", defaults, "Default")
 	db = self.db.profile
 
+	-- Override legacy output options that were broken by Blizzard in
+	-- addon restrictions with 12.0/Midnight
+	if not self.db.profile.sink.sink20OutputSink or
+	   self.db.profile.sink.sink20OutputSink == "Default" or
+	   self.db.profile.sink.sink20OutputSink == "Blizzard" or
+	   self.db.profile.sink.sink20OutputSink == "Channel" then
+		self.db.profile.sink.sink20OutputSink = "Chat"
+	end
+
 	self:SetSinkStorage(self.db.profile.sink)
 
 	if not db.version or db.version < 3 then
@@ -467,6 +476,14 @@ function LoggerHead.GenerateOptionsInternal()
 			profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LoggerHead.db),
 		},
 	}
+
+	-- Remove output styles that were broken with
+	-- 12.0/Midnight addon restrictions
+	-- Note: Default for LibSink is same as "Blizzard" is same as
+	-- scrolling combat text
+	LoggerHead.options.args.output.args.Blizzard = nil
+	LoggerHead.options.args.output.args.Channel = nil
+	LoggerHead.options.args.output.args.Default = nil
 
 	local function buildmenu(options,zonetype,zone,difficulties)
 		local d = {}
