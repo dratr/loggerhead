@@ -151,12 +151,14 @@ function LoggerHead:OnInitialize()
 	db = self.db.profile
 
 	-- Override legacy output options that were broken by Blizzard in
-	-- addon restrictions with 12.0/Midnight
+	-- addon restrictions with 12.0/Midnight. "Chat" was briefly used here
+	-- by mistake, but the LibSink handler key is "ChatFrame".
 	if not self.db.profile.sink.sink20OutputSink or
 	   self.db.profile.sink.sink20OutputSink == "Default" or
 	   self.db.profile.sink.sink20OutputSink == "Blizzard" or
-	   self.db.profile.sink.sink20OutputSink == "Channel" then
-		self.db.profile.sink.sink20OutputSink = "Chat"
+	   self.db.profile.sink.sink20OutputSink == "Channel" or
+	   self.db.profile.sink.sink20OutputSink == "Chat" then
+		self.db.profile.sink.sink20OutputSink = "ChatFrame"
 	end
 
 	self:SetSinkStorage(self.db.profile.sink)
